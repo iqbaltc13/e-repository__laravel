@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'users';
+        $this->table_name =  'faculties';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -19,19 +19,14 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->string('full_name')->nullable();
-            $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role', ['admin', 'member','editor'])->default('member');
-            $table->string('institution')->nullable();
-            $table->text('bio')->nullable();
-            $table->string('phone')->nullable();
-            $table->rememberToken();
-            $table->string('created_by_id',255)->nullable();
-            $table->string('updated_by_id',255)->nullable();
-            $table->string('deleted_by_id',255)->nullable();
+            $table->string('faculty_code', 10)->unique();
+            $table->string('faculty_name');
+            $table->foreignId('institution_id')->constrained('institutions')->onDelete('cascade');
+            $table->text('deskripsi')->nullable();
+            $table->string('head_name', 100)->nullable();
+            $table->string('email', 100)->nullable();
+            $table->string('telepon', 20)->nullable();
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();

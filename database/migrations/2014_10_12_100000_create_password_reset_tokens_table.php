@@ -9,9 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    public function __construct()
+    {
+        $this->table_name =  'password_reset_tokens';
+        $this->schema = Schema::connection($this->getConnection());
+    }
+
     public function up(): void
     {
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
+        $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->dateTime('created_at')->nullable();
@@ -23,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists($this->table_name);
     }
 };

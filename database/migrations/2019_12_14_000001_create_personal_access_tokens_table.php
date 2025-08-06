@@ -9,10 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    public function __construct()
+    {
+        $this->table_name =  'personal_access_tokens';
+        $this->schema = Schema::connection($this->getConnection());
+    }
+
     public function up(): void
     {
-        Schema::create('personal_access_tokens', function (Blueprint $table) {
-            $table->id();
+        $this->schema->create($this->table_name, function (Blueprint $table) {
+            $table->string('id',255)->primary();
             $table->morphs('tokenable');
             $table->string('name');
             $table->string('token', 64)->unique();
@@ -28,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('personal_access_tokens');
+        Schema::dropIfExists($this->table_name);
     }
 };

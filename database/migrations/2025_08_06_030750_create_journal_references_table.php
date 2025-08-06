@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'failed_jobs';
+        $this->table_name =  'departments';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -19,12 +19,16 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->string('uuid')->unique();
-            $table->text('connection')->nullable();
-            $table->text('queue')->nullable();
-            $table->longText('payload')->nullable();
-            $table->longText('exception')->nullable();
-            $table->dateTime('failed_at')->useCurrent();
+            $table->foreignId('journal_id')->constrained()->onDelete('cascade');
+            $table->text('reference_text')->nullable();
+            $table->string('doi')->nullable();
+            $table->string('url')->nullable();
+            $table->integer('order')->nullable();
+            $table->dateTime('created_at')->nullable();
+            $table->dateTime('updated_at')->nullable();
+            $table->dateTime('deleted_at')->nullable();
+
+            $table->index(['journal_id', 'order']);
         });
     }
 

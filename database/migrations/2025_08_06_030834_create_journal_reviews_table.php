@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'users';
+        $this->table_name =  'departments';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -19,22 +19,17 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->string('full_name')->nullable();
-            $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role', ['admin', 'member','editor'])->default('member');
-            $table->string('institution')->nullable();
-            $table->text('bio')->nullable();
-            $table->string('phone')->nullable();
-            $table->rememberToken();
-            $table->string('created_by_id',255)->nullable();
-            $table->string('updated_by_id',255)->nullable();
-            $table->string('deleted_by_id',255)->nullable();
+            $table->foreignId('journal_id')->constrained()->onDelete('cascade');
+            $table->foreignId('reviewer_id')->constrained('users')->onDelete('cascade');
+            $table->text('comments')->nullable();
+            $table->enum('recommendation', ['accept', 'minor_revision', 'major_revision', 'reject']);
+            $table->integer('rating')->nullable(); // 1-5 scale
+            $table->timestamp('reviewed_at')->nullable();
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();
+
+            $table->unique(['journal_id', 'reviewer_id']);
         });
     }
 
