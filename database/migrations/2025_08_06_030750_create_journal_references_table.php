@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'departments';
+        $this->table_name =  'journal_references';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -19,7 +19,7 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->foreignId('journal_id')->constrained()->onDelete('cascade');
+            $table->string('journal_id',255)->constrained()->onDelete('cascade');
             $table->text('reference_text')->nullable();
             $table->string('doi')->nullable();
             $table->string('url')->nullable();
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table_name);
+        $this->schema->dropIfExists($this->table_name);
     }
 };

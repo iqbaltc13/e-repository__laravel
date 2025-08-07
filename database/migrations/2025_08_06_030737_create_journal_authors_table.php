@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'departments';
+        $this->table_name =  'journal_authors';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -19,8 +19,9 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->foreignId('journal_id')->constrained()->onDelete('cascade');
-            $table->string('name')->nullable();
+            $table->string('journal_id',255)->constrained()->onDelete('cascade');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('email')->nullable();
             $table->string('institution')->nullable();
             $table->integer('order')->default(1);
@@ -38,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table_name);
+        $this->schema->dropIfExists($this->table_name);
     }
 };

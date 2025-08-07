@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'departments';
+        $this->table_name =  'journals';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -22,20 +22,24 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('abstract')->nullable();
             $table->text('keywords')->nullable();
-            $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('journal_categories')->onDelete('cascade');
+            $table->string('author_id',255)->constrained('users')->onDelete('cascade');
+            $table->string('category_id',255)->constrained('journal_categories')->onDelete('cascade');
             $table->string('doi')->nullable()->unique();
             $table->string('issn')->nullable();
             $table->string('volume')->nullable();
             $table->string('issue')->nullable();
+            $table->integer('revision_number')->nullable();
             $table->integer('pages_start')->nullable();
             $table->integer('pages_end')->nullable();
             $table->date('publication_date');
             $table->string('publisher')->nullable();
-            $table->string('journal_name')->nullable();
+            $table->string('institution_id')->nullable();
+            $table->text('journal_name')->nullable();
             $table->string('language', 10)->default('id')->nullable();
-            $table->enum('status', ['draft', 'submitted', 'under_review', 'accepted', 'published', 'rejected'])->default('draft');
+            $table->enum('status', ['draft', 'submitted', 'under_review', 'accepted', 'published', 'rejected'])->default('submitted');
+            $table->enum('thesis_type', ['undergraduate (S1)', 'masters (S2)', 'doctoral (S3)'])->default('undergraduate (S1)');
             $table->string('pdf_file')->nullable();
+            $table->string('other_document_file')->nullable();
             $table->integer('views_count')->default(0);
             $table->integer('downloads_count')->default(0);
             $table->dateTime('created_at')->nullable();
@@ -52,6 +56,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table_name);
+        $this->schema->dropIfExists($this->table_name);
     }
 };

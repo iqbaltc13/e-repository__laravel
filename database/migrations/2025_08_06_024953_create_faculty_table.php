@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('id',255)->primary();
             $table->string('faculty_code', 10)->unique();
             $table->string('faculty_name');
-            $table->foreignId('institution_id')->constrained('institutions')->onDelete('cascade');
+
+            $table->string('institution_id',255)->constrained('institutions')->onDelete('cascade');
             $table->text('deskripsi')->nullable();
             $table->string('head_name', 100)->nullable();
             $table->string('email', 100)->nullable();
@@ -38,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table_name);
+        $this->schema->dropIfExists($this->table_name);
     }
 };

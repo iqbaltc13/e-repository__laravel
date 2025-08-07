@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function __construct()
     {
-        $this->table_name =  'departments';
+        $this->table_name =  'journal_reviews';
         $this->schema = Schema::connection($this->getConnection());
     }
 
@@ -19,8 +19,8 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->foreignId('journal_id')->constrained()->onDelete('cascade');
-            $table->foreignId('reviewer_id')->constrained('users')->onDelete('cascade');
+            $table->string('journal_id',255)->constrained()->onDelete('cascade');
+            $table->string('reviewer_id',255)->constrained('users')->onDelete('cascade');
             $table->text('comments')->nullable();
             $table->enum('recommendation', ['accept', 'minor_revision', 'major_revision', 'reject']);
             $table->integer('rating')->nullable(); // 1-5 scale
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table_name);
+        $this->schema->dropIfExists($this->table_name);
     }
 };

@@ -25,7 +25,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'member','editor'])->default('member');
-            $table->string('institution')->nullable();
+            $table->string('organization')->nullable();
+            $table->string('departemen')->nullable();
+            $table->string('address')->nullable();
+            $table->string('country')->nullable();
             $table->text('bio')->nullable();
             $table->string('phone')->nullable();
             $table->rememberToken();
@@ -43,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists($this->table_name);
+        $this->schema->dropIfExists($this->table_name);
     }
 };
