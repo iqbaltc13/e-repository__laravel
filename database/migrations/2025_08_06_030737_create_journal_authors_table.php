@@ -20,6 +20,7 @@ return new class extends Migration
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
             $table->string('journal_id',255)->constrained()->onDelete('cascade');
+            $table->bigInteger('eprintid')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();

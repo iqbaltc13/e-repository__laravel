@@ -19,6 +19,7 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
+            $table->bigInteger('eprintid')->nullable();
             $table->string('name')->nullable();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
