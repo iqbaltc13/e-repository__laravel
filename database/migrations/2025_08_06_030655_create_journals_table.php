@@ -34,7 +34,7 @@ return new class extends Migration
             $table->integer('pages_end')->nullable();
             $table->date('publication_date');
             $table->string('publisher')->nullable();
-            $table->string('institution_id')->nullable();
+            $table->string('institution')->nullable();
             $table->text('journal_name')->nullable();
             $table->string('language', 10)->default('id')->nullable();
             $table->enum('status', ['draft', 'submitted', 'under_review', 'accepted', 'published', 'rejected'])->default('submitted');

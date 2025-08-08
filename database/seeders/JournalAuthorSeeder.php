@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use App\Models\JournalAuthor;
+use Illuminate\Support\Str;
 
 
 class JournalAuthorSeeder extends Seeder
@@ -23,49 +25,41 @@ class JournalAuthorSeeder extends Seeder
     {
         DB::beginTransaction();
         try{
-            DB::table('users')->truncate();
+            JournalAuthor::truncate();
             $arrSelectCreatorsName = [
                 'eprintid',
-                'creatiors_name_family',
+                'creators_name_family',
                 'creators_name_given',
             ];
             $arrSelectCreatorsId = [
 
-                'email'
+                'creators_id'
             ];
 
 
         $sourceData = DB::table('eprint_creators_id as eci')
-                    ->select($arrSelect)
-                    ->where('email','!=','')
-                    ->whereNotNull('email')
-                    ->orderByRaw("CONCAT(email) DESC")->get();
+                    ->join('eprint_creators_name', 'eci.eprintid', '=', 'eprint_creators_name.eprintid')
+                    ->selectRaw('eci.creators_id as email, eprint_creators_name.eprintid as eprintid ,eprint_creators_name.creators_name_family as nama_belakang, eprint_creators_name.creators_name_given as nama_depan')
+                    ->where('creators_id','!=','')
+                    ->whereNotNull('creators_id')
+                    ->orderByRaw("CONCAT(creators_id) DESC")->get();
 
-        $transformedData = $sourceData->map(function ($user) {
+        $transformedData = $sourceData->map(function ($creator) {
             return [
-                'id' => $this->prefix_id.str_pad($user->userid, 6, '0', STR_PAD_LEFT),
-                'eprint_userid' => $user->userid,
-                'full_name' => $user->name_given.' '.$user->name_family,
-                'username' => $user->username,
-                'email' => $user->email,
-                'password' => $user->password,
-                'role' => $user->usertype,
-                'organization' =>  $user->org,
-                'departemen' => $user->dept,
-                'country' => $user->country,
-                'address' => $user->address,
-                'created_at' => $user->joined_year.'-'.$user->joined_month.'-'.$user->joined_day.' '.$user->joined_hour.':'.$user->joined_month.':'.$user->joined_second
+                'id' => 'AUTHOR_' . strtoupper(Str::random(8)),
+                'email'   => $creator->email,
+                'eprintid' => $creator->eprintid,
+                'first_name' => $creator->nama_depan,
+                'last_name' => $creator->nama_belakang,
+                'journal_id' => $this->prefix_id.str_pad($creator->eprintid, 6, '0', STR_PAD_LEFT),
+
             ];
         })->toArray();
         $chunkSize = 1000;
         $chunks = array_chunk( $transformedData, $chunkSize);
         foreach ($chunks as $chunk) {
-            $bulkInsertTransformedData = DB::table('users')->insert($chunk);
+            $bulkInsertTransformedData = JournalAuthor::insert($chunk);
         }
-
-
-
-
             DB::commit();
 
 
