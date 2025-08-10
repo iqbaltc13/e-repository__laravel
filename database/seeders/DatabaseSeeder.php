@@ -13,12 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
+        ini_set('memory_limit', '1024M');
         if (App::environment('local', 'development')) {
             $this->call([
-                //UserSeeder::class,
-                //JournalAuthorSeeder::class
                 JournalSeeder::class,
+                UserSeeder::class,
+                JournalAuthorSeeder::class,
+
 
             ]);
         }

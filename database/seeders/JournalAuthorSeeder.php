@@ -23,6 +23,7 @@ class JournalAuthorSeeder extends Seeder
     }
     public function run()
     {
+        ini_set('memory_limit', '1024M');
         DB::beginTransaction();
         try{
             JournalAuthor::truncate();

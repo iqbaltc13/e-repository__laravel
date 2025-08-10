@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
 
     public function run()
     {
+        ini_set('memory_limit', '1024M');
         DB::beginTransaction();
         try{
             DB::table('users')->truncate();

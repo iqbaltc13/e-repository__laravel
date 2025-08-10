@@ -25,6 +25,7 @@ class JournalSeeder extends Seeder
 
     public function run()
     {
+        ini_set('memory_limit', '1024M');
         DB::beginTransaction();
         try{
             DB::table('journals')->truncate();
@@ -51,29 +52,25 @@ class JournalSeeder extends Seeder
                 'eprint_status',
                 'issn',
                 'number',
+                'thesis_type',
                 'volume'
+
 
             ];
 
 
         $sourceData = DB::table('eprint')
                     ->select($arrSelect)
-                    ->whereNotNull('last')
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
-                    ->whereNotNull()
+
                     ->where('type','thesis')
                     ->get();
 
         $transformedData = $sourceData->map(function ($journal) {
+            $explodeFileinfo = [];
+            if(!is_null($journal->fileinfo)){
+                $explodeFileinfo = explode('|', $journal->fileinfo);
+            }
+
             return [
                 'id' => $this->prefix_id.str_pad($journal->eprintid, 6, '0', STR_PAD_LEFT),
                 'eprintid' => $journal->eprintid,
@@ -84,15 +81,17 @@ class JournalSeeder extends Seeder
                 'institution' => $journal->institution,
                 'abstract' =>  $journal->abstract,
                 'journal_name' => $journal->title,
+                'thesis_type' => $journal->thesis_type,
                 'author_id' => $this->prefix_id.str_pad($journal->userid, 6, '0', STR_PAD_LEFT),
-                'pdf_file' => $journal->fileinfo,
-                'other_document_file' => $journal->fileinfo,
+                'pdf_file' => sizeof($explodeFileinfo) > 0 ? $explodeFileinfo[0] : NULL,
+                'other_document_file' => sizeof($explodeFileinfo) > 1 ? implode('|', array_slice($explodeFileinfo,1)) : NULL,
                 'revision_number' => $journal->rev_number,
                 'updated_at' => $journal->lastmod_year.'-'.$journal->lastmod_month.'-'.$journal->lastmod_day.' '.$journal->lastmod_hour.':'.$journal->lastmod_month.':'.$journal->lastmod_second,
-                'publication_date' => $journal->datestamp_year.'-'.$journal->datestamp_month.'-'.$journal->datestamp_day.' '.$journal->datestamp_hour.':'.$journal->datestamp_month.':'.$journal->datestamp_second,
+                'publication_date' => is_null ($journal->datestamp_year) || is_null($journal->datestamp_month) || is_null($journal->datestamp_day) || is_null($journal->datestamp_hour) || is_null($journal->datestamp_minute) || is_null($journal->datestamp_second) ? NULL :
+                    $journal->datestamp_year.'-'.$journal->datestamp_month.'-'.$journal->datestamp_day.' '.$journal->datestamp_hour.':'.$journal->datestamp_month.':'.$journal->datestamp_second,
             ];
         })->toArray();
-        $chunkSize = 1000;
+        $chunkSize = 500;
         $chunks = array_chunk( $transformedData, $chunkSize);
         foreach ($chunks as $chunk) {
             $bulkInsertTransformedData = DB::table('journals')->insert($chunk);
