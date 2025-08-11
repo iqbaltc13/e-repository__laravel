@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('kota', 100)->nullable();
             $table->string('provinsi', 100)->nullable();
             $table->string('kode_pos', 10)->nullable();
-            $table->string('phpoe', 20)->nullable();
+            $table->string('phone', 20)->nullable();
             $table->string('email', 100)->nullable();
             $table->string('website', 255)->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');

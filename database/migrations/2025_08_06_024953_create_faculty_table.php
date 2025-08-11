@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->string('head_name', 100)->nullable();
             $table->string('email', 100)->nullable();
-            $table->string('telepon', 20)->nullable();
+            $table->string('phone', 20)->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();

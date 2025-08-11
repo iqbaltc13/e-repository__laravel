@@ -1,0 +1,213 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="row">
+    <div class="col-md-12">
+        <!-- Header -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-start">
+                <div>
+                    <h4 class="card-title mb-2">{{ $journal->journal_name }}</h4>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-{{ $journal->status === 'published' ? 'success' : ($journal->status === 'rejected' ? 'danger' : 'warning') }} fs-6">
+                            {{ ucfirst($journal->status) }}
+                        </span>
+                        <span class="badge bg-info">{{ strtoupper($journal->language) }}</span>
+                        <small class="text-muted">
+                            <i class="fas fa-eye"></i> {{ $journal->views_count }} views
+                            <i class="fas fa-download ms-2"></i> {{ $journal->downloads_count }} downloads
+                        </small>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    @can('update', $journal)
+                        <a href="{{ route('journals.edit', $journal) }}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    @endcan
+                    @can('publish', $journal)
+                        @if($journal->status !== 'published')
+                            <form method="POST" action="{{ route('journals.publish', $journal) }}" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-success"
+                                        onclick="return confirm('Yakin ingin mempublish jurnal ini?')">
+                                    <i class="fas fa-globe"></i> Publish
+                                </button>
+                            </form>
+                        @endif
+                    @endcan
+                    <a href="{{ route('journals.download', $journal) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <!-- Abstract -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Abstrak</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-justify">{{ $journal->abstract }}</p>
+                    </div>
+                </div>
+
+                <!-- Keywords -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Kata Kunci</h6>
+                    </div>
+                    <div class="card-body">
+                        @foreach(explode(',', $journal->keyword) as $keyword)
+                            <span class="badge bg-secondary me-1 mb-1">{{ trim($keyword) }}</span>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Authors -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">Daftar Author</h6>
+                        @can('update', $journal)
+                            <a href="{{ route('journal-authors.index', $journal) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-users"></i> Kelola Author
+                            </a>
+                        @endcan
+                    </div>
+                    <div class="card-body">
+                        @if($journal->journalAuthors->count() > 0)
+                            <div class="list-group list-group-flush">
+                                @foreach($journal->journalAuthors as $author)
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">
+                                                    {{ $author->full_name }}
+                                                    @if($author->is_corresponding)
+                                                        <span class="badge bg-success ms-1">Corresponding</span>
+                                                    @endif
+                                                </h6>
+                                                <p class="mb-1"><strong>{{ $author->institution }}</strong></p>
+                                                <small class="text-muted">{{ $author->email }}</small>
+                                            </div>
+                                            <span class="badge bg-primary">{{ $author->order }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-muted mb-0">Belum ada author yang ditambahkan.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Journal Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Informasi Jurnal</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>Author Utama:</strong></td>
+                                <td>{{ $journal->author->fullname }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kategori:</strong></td>
+                                <td>
+                                    <a href="{{ route('journal-categories.show', $journal->category) }}"
+                                       class="text-decoration-none">
+                                        {{ $journal->category->name }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Universitas:</strong></td>
+                                <td>{{ $journal->institution->institution_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fakultas:</strong></td>
+                                <td>{{ $journal->faculty->faculty_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Departemen:</strong></td>
+                                <td>{{ $journal->department->name }}</td>
+                            </tr>
+                            @if($journal->doi)
+                                <tr>
+                                    <td><strong>DOI:</strong></td>
+                                    <td><code>{{ $journal->doi }}</code></td>
+                                </tr>
+                            @endif
+                            @if($journal->issn)
+                                <tr>
+                                    <td><strong>ISSN:</strong></td>
+                                    <td><code>{{ $journal->issn }}</code></td>
+                                </tr>
+                            @endif
+                            @if($journal->publisher)
+                                <tr>
+                                    <td><strong>Penerbit:</strong></td>
+                                    <td>{{ $journal->publisher }}</td>
+                                </tr>
+                            @endif
+                            @if($journal->page_start && $journal->page_end)
+                                <tr>
+                                    <td><strong>Halaman:</strong></td>
+                                    <td>{{ $journal->page_start }}-{{ $journal->page_end }}</td>
+                                </tr>
+                            @endif
+                            <tr>
+                                <td><strong>Revisi ke:</strong></td>
+                                <td>{{ $journal->revision_number }}</td>
+                            </tr>
+                            @if($journal->publication_date)
+                                <tr>
+                                    <td><strong>Tanggal Publikasi:</strong></td>
+                                    <td>{{ $journal->publication_date->format('d M Y') }}</td>
+                                </tr>
+                            @endif
+                            <tr>
+                                <td><strong>Dibuat:</strong></td>
+                                <td>{{ $journal->created_at->format('d M Y H:i') }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Diupdate:</strong></td>
+                                <td>{{ $journal->updated_at->format('d M Y H:i') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Files -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">File</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('journals.download', $journal) }}" class="btn btn-primary">
+                                <i class="fas fa-file-pdf"></i> Download PDF Jurnal
+                            </a>
+                            @if($journal->other_document_file)
+                                <a href="{{ Storage::url($journal->other_document_file) }}"
+                                   class="btn btn-outline-secondary" target="_blank">
+                                    <i class="fas fa-file"></i> Dokumen Pendukung
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
