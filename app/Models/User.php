@@ -54,4 +54,39 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class, 'institution_code', 'institution_code');
+    }
+
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class, 'faculty_code', 'faculty_code');
+    }
+
+    public function prodi()
+    {
+        return $this->belongsTo(Department::class, 'department_code', 'department_code');
+    }
+
+    public function journals()
+    {
+        return $this->hasMany(Journal::class, 'author_id');
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isEditor()
+    {
+        return $this->role === 'editor';
+    }
+
+    public function isMember()
+    {
+        return $this->role === 'member';
+    }
 }

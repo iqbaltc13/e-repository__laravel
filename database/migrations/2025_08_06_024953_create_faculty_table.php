@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('faculty_code', 10)->unique();
             $table->string('faculty_name');
 
-            $table->string('institution_id',255)->constrained('institutions')->onDelete('cascade');
+            $table->string('institution_code',255)->nullable();
             $table->text('deskripsi')->nullable();
             $table->string('head_name', 100)->nullable();
             $table->string('email', 100)->nullable();

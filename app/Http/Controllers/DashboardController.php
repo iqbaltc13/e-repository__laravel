@@ -22,24 +22,25 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Statistics
-        $totalJournals = Journal::count();
+        $totalJournals = Journal::whereNotNull('journal_name')->count();
         $totalUsers = User::where('role','|=' ,'admin')->count();
         $totalCategories = JournalCategory::count();
         $totalInstitutions = Institution::count();
 
         // User specific stats
         $userJournals = $user->journals()->count();
-        $publishedJournals = Journal::where('status', 'published')->count();
-        $underReviewJournals = Journal::where('status', 'under_review')->count();
+        $publishedJournals = Journal::whereNotNull('journal_name')->where('status', 'published')->count();
+        $underReviewJournals = Journal::whereNotNull('journal_name')->where('status', 'under_review')->count();
 
         // Recent journals
-        $recentJournals = Journal::with(['author', 'category'])
+        $recentJournals = Journal::with(['author', 'category'])->whereNotNull('journal_name')
             ->latest()
             ->limit(5)
             ->get();
 
         // Most viewed journals
         $popularJournals = Journal::with(['author', 'category'])
+            ->whereNotNull('journal_name')
             ->orderBy('views_count', 'desc')
             ->limit(5)
             ->get();

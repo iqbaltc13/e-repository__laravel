@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('id',255)->primary();
             $table->string('department_code', 10)->unique();
             $table->string('department_name');
-            $table->string('faculty_id',255)->constrained('faculty')->onDelete('cascade');
+            $table->string('faculty_code',255)->nullable();
+            $table->string('institution_code',255)->nullable();
             $table->enum('jenjang', ['D3', 'D4', 'S1', 'S2', 'S3']);
             $table->enum('akreditasi', ['A', 'B', 'C', 'Unggul', 'Baik Sekali', 'Baik', 'Belum Terakreditasi'])->nullable();
             $table->text('deskripsi')->nullable();

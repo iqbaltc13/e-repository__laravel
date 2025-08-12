@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('id',255)->primary();
             $table->string('institution_code', 10)->unique();
             $table->string('institution_name');
-            $table->text('alamat')->nullable();
+            $table->text('address')->nullable();
             $table->string('kota', 100)->nullable();
             $table->string('provinsi', 100)->nullable();
             $table->string('kode_pos', 10)->nullable();

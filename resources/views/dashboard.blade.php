@@ -85,7 +85,7 @@
                         <div>
                             <h6 class="mb-1">
                                 <a href="{{ route('journals.show', $journal) }}" class="text-decoration-none">
-                                    {{ Str::limit($journal->journal_name, 50) }}
+                                    {{ strip_tags(html_entity_decode(Str::limit($journal->journal_name, 50))) }}
                                 </a>
                             </h6>
                             <small class="text-muted">

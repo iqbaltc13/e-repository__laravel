@@ -24,9 +24,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 // Authentication routes (jika menggunakan Laravel Breeze/Jetstream)
 Route::auth();
@@ -84,3 +81,7 @@ Route::get('/journals/public', [JournalController::class, 'publicIndex'])->name(
 Route::get('/journals/public/{journal}', [JournalController::class, 'publicShow'])->name('journals.public.show');
 Route::get('/journals/public/{journal}/download', [JournalController::class, 'publicDownload'])->name('journals.public.download');
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

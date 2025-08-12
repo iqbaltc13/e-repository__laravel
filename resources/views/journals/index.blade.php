@@ -72,7 +72,7 @@
                     </p>
                     <div class="mb-2">
                         <small class="text-muted">
-                            <i class="fas fa-user"></i> {{ $journal->author->fullname }}<br>
+                            <i class="fas fa-user"></i> {{ $journal->author ? $journal->author->fullname : '' }}<br>
                             <i class="fas fa-building"></i> {{ $journal->faculty->faculty_name }}<br>
                             <i class="fas fa-tag"></i> {{ $journal->category->name }}
                         </small>

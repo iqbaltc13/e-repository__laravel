@@ -23,7 +23,7 @@ class JournalController extends Controller
 
     public function index(Request $request)
     {
-        $query = Journal::with(['author', 'category', 'institution', 'faculty', 'department']);
+        $query = Journal::with(['author', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
 
         // Filter berdasarkan role
         if (Auth::user()->isMember()) {
@@ -104,7 +104,7 @@ class JournalController extends Controller
 
     public function show(Journal $journal)
     {
-        $journal->load(['author', 'category', 'institution', 'faculty', 'department', 'journalAuthors']);
+        $journal->load(['author', 'category', 'universitas', 'faculty', 'department', 'coAuthors']);
         $journal->incrementViews();
 
         return view('journals.show', compact('journal'));

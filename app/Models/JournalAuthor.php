@@ -20,6 +20,7 @@ class JournalAuthor extends Model
     protected $guarded = [];
     protected $keyType = 'string';
     public $incrementing = false;
+    protected $appends = ['full_name'];
 
     protected static function boot()
     {
@@ -31,6 +32,17 @@ class JournalAuthor extends Model
                 // Generates something like: USER_A1B2C3D4
             }
         });
+
+    }
+
+    public function journal()
+    {
+        return $this->belongsTo(Journal::class, 'journal_id', 'id');
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 
 }

@@ -1,0 +1,451 @@
+{{-- Journals Edit: journals/edit.blade.php --}}
+@extends('layouts.app')
+
+@section('content')
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Edit Jurnal: {{ $journal->journal_name }}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ route('journals.update', $journal) }}" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <!-- Basic Information -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="journal_name" class="form-label">Nama Jurnal <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('journal_name') is-invalid @enderror"
+                                       id="journal_name" name="journal_name" value="{{ old('journal_name', $journal->journal_name) }}" required>
+                                @error('journal_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
+                                <select class="form-select @error('category_id') is-invalid @enderror"
+                                        id="category_id" name="category_id" required>
+                                    <option value="">Pilih Kategori</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                                {{ old('category_id', $journal->category_id) == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="abstract" class="form-label">Abstrak <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('abstract') is-invalid @enderror"
+                                  id="abstract" name="abstract" rows="6" required>{{ old('abstract', $journal->abstract) }}</textarea>
+                        @error('abstract')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">
+                            Karakter: <span id="abstractCount">{{ strlen($journal->abstract) }}</span> (minimal 100 karakter)
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="keyword" class="form-label">Kata Kunci <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('keyword') is-invalid @enderror"
+                                  id="keyword" name="keyword" rows="2" required>{{ old('keyword', $journal->keyword) }}</textarea>
+                        @error('keyword')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text text-muted">Pisahkan kata kunci dengan koma (,)</small>
+                    </div>
+
+                    <!-- Institution Information -->
+                    <h6 class="mb-3 mt-4">Informasi Institusi</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="institution_code" class="form-label">Universitas <span class="text-danger">*</span></label>
+                                <select class="form-select @error('institution_code') is-invalid @enderror"
+                                        id="institution_code" name="institution_code" required>
+                                    <option value="">Pilih Universitas</option>
+                                    @foreach($institutions as $institution)
+                                        <option value="{{ $institution->institution_code }}"
+                                                {{ old('institution_code', $journal->institution_code) == $institution->institution_code ? 'selected' : '' }}>
+                                            {{ $institution->institution_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('institution_code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="faculty_code" class="form-label">Fakultas <span class="text-danger">*</span></label>
+                                <select class="form-select @error('faculty_code') is-invalid @enderror"
+                                        id="faculty_code" name="faculty_code" required>
+                                    <option value="">Pilih Fakultas</option>
+                                    @foreach($faculties as $faculty)
+                                        <option value="{{ $faculty->faculty_code }}"
+                                                {{ old('faculty_code', $journal->faculty_code) == $faculty->faculty_code ? 'selected' : '' }}>
+                                            {{ $faculty->faculty_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('faculty_code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="department_code" class="form-label">Departemen <span class="text-danger">*</span></label>
+                                <select class="form-select @error('department_code') is-invalid @enderror"
+                                        id="department_code" name="department_code" required>
+                                    <option value="">Pilih Departemen</option>
+                                    @foreach($departments as $department)
+                                        <option value="{{ $department->department_code }}"
+                                                {{ old('department_code', $journal->department_code) == $department->department_code ? 'selected' : '' }}>
+                                            {{ $department->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('department_code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="institution" class="form-label">Nama Institusi Pengaju <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('institution') is-invalid @enderror"
+                               id="institution" name="institution" value="{{ old('institution', $journal->institution) }}" required>
+                        @error('institution')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Publication Details -->
+                    <h6 class="mb-3 mt-4">Detail Publikasi</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="doi" class="form-label">DOI</label>
+                                <input type="text" class="form-control @error('doi') is-invalid @enderror"
+                                       id="doi" name="doi" value="{{ old('doi', $journal->doi) }}" placeholder="10.xxxx/xxxxxx">
+                                @error('doi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="issn" class="form-label">ISSN</label>
+                                <input type="text" class="form-control @error('issn') is-invalid @enderror"
+                                       id="issn" name="issn" value="{{ old('issn', $journal->issn) }}" placeholder="XXXX-XXXX">
+                                @error('issn')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="publisher" class="form-label">Penerbit</label>
+                                <input type="text" class="form-control @error('publisher') is-invalid @enderror"
+                                       id="publisher" name="publisher" value="{{ old('publisher', $journal->publisher) }}">
+                                @error('publisher')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="mb-3">
+                                <label for="revision_number" class="form-label">Revisi ke-</label>
+                                <input type="number" class="form-control @error('revision_number') is-invalid @enderror"
+                                       id="revision_number" name="revision_number"
+                                       value="{{ old('revision_number', $journal->revision_number) }}" min="0">
+                                @error('revision_number')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="mb-3">
+                                <label for="page_start" class="form-label">Halaman Awal</label>
+                                <input type="number" class="form-control @error('page_start') is-invalid @enderror"
+                                       id="page_start" name="page_start" value="{{ old('page_start', $journal->page_start) }}" min="1">
+                                @error('page_start')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="mb-3">
+                                <label for="page_end" class="form-label">Halaman Akhir</label>
+                                <input type="number" class="form-control @error('page_end') is-invalid @enderror"
+                                       id="page_end" name="page_end" value="{{ old('page_end', $journal->page_end) }}" min="1">
+                                @error('page_end')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="language" class="form-label">Bahasa <span class="text-danger">*</span></label>
+                                <select class="form-select @error('language') is-invalid @enderror"
+                                        id="language" name="language" required>
+                                    <option value="id" {{ old('language', $journal->language) == 'id' ? 'selected' : '' }}>Indonesia</option>
+                                    <option value="en" {{ old('language', $journal->language) == 'en' ? 'selected' : '' }}>English</option>
+                                    <option value="es" {{ old('language', $journal->language) == 'es' ? 'selected' : '' }}>Español</option>
+                                    <option value="fr" {{ old('language', $journal->language) == 'fr' ? 'selected' : '' }}>Français</option>
+                                    <option value="de" {{ old('language', $journal->language) == 'de' ? 'selected' : '' }}>Deutsch</option>
+                                    <option value="ja" {{ old('language', $journal->language) == 'ja' ? 'selected' : '' }}>日本語</option>
+                                    <option value="ko" {{ old('language', $journal->language) == 'ko' ? 'selected' : '' }}>한국어</option>
+                                    <option value="pt" {{ old('language', $journal->language) == 'pt' ? 'selected' : '' }}>Português</option>
+                                    <option value="ru" {{ old('language', $journal->language) == 'ru' ? 'selected' : '' }}>Русский</option>
+                                    <option value="zh" {{ old('language', $journal->language) == 'zh' ? 'selected' : '' }}>中文</option>
+                                </select>
+                                @error('language')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                <select class="form-select @error('status') is-invalid @enderror"
+                                        id="status" name="status" required>
+                                    <option value="draft" {{ old('status', $journal->status) == 'draft' ? 'selected' : '' }}>Draft</option>
+                                    <option value="submitted" {{ old('status', $journal->status) == 'submitted' ? 'selected' : '' }}>Submitted</option>
+                                    <option value="under_review" {{ old('status', $journal->status) == 'under_review' ? 'selected' : '' }}>Under Review</option>
+                                    <option value="accepted" {{ old('status', $journal->status) == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                                    <option value="published" {{ old('status', $journal->status) == 'published' ? 'selected' : '' }}>Published</option>
+                                    <option value="rejected" {{ old('status', $journal->status) == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publication Date -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="publication_date" class="form-label">Tanggal Publikasi</label>
+                                <input type="date" class="form-control @error('publication_date') is-invalid @enderror"
+                                       id="publication_date" name="publication_date"
+                                       value="{{ old('publication_date', $journal->publication_date ? $journal->publication_date->format('Y-m-d') : '') }}">
+                                @error('publication_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-text text-muted">Isi jika jurnal sudah dipublikasi</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Files Display -->
+                    <h6 class="mb-3 mt-4">File Saat Ini</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">File PDF Jurnal</h6>
+                                    @if($journal->pdf_file)
+                                        <p class="card-text">
+                                            <i class="fas fa-file-pdf text-danger"></i>
+                                            {{ basename($journal->pdf_file) }}
+                                        </p>
+                                        <a href="{{ route('journals.download', $journal) }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                    @else
+                                        <p class="card-text text-muted">Tidak ada file PDF</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Dokumen Pendukung</h6>
+                                    @if($journal->other_document_file)
+                                        <p class="card-text">
+                                            <i class="fas fa-file text-info"></i>
+                                            {{ basename($journal->other_document_file) }}
+                                        </p>
+                                        <a href="{{ Storage::url($journal->other_document_file) }}"
+                                           class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="fas fa-external-link-alt"></i> Buka
+                                        </a>
+                                    @else
+                                        <p class="card-text text-muted">Tidak ada dokumen pendukung</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <h6 class="mb-3 mt-4">Update File <small class="text-muted">(Opsional - kosongkan jika tidak ingin mengubah)</small></h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="pdf_file" class="form-label">File PDF Jurnal Baru</label>
+                                <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
+                                       id="pdf_file" name="pdf_file" accept=".pdf">
+                                @error('pdf_file')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-text text-muted">Format: PDF, Maksimal: 10MB. Kosongkan jika tidak ingin mengubah file.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="other_document_file" class="form-label">Dokumen Pendukung Baru</label>
+                                <input type="file" class="form-control @error('other_document_file') is-invalid @enderror"
+                                       id="other_document_file" name="other_document_file">
+                                @error('other_document_file')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="form-text text-muted">Opsional, Maksimal: 10MB. Kosongkan jika tidak ingin mengubah file.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Display -->
+                    <div class="alert alert-info">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <i class="fas fa-eye"></i> <strong>Views:</strong> {{ number_format($journal->views_count) }}
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-download"></i> <strong>Downloads:</strong> {{ number_format($journal->downloads_count) }}
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-calendar"></i> <strong>Dibuat:</strong> {{ $journal->created_at->format('d M Y') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{{ route('journals.show', $journal) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Kembali ke Detail
+                            </a>
+                            <a href="{{ route('journals.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-list"></i> Daftar Jurnal
+                            </a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Jurnal
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Character count for abstract
+    const abstractTextarea = document.getElementById('abstract');
+    const abstractCount = document.getElementById('abstractCount');
+
+    abstractTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        abstractCount.textContent = count;
+        abstractCount.className = count < 100 ? 'text-danger' : 'text-success';
+    });
+
+    // Page validation
+    const pageStart = document.getElementById('page_start');
+    const pageEnd = document.getElementById('page_end');
+
+    function validatePages() {
+        const start = parseInt(pageStart.value) || 0;
+        const end = parseInt(pageEnd.value) || 0;
+
+        if (start > 0 && end > 0 && start >= end) {
+            pageEnd.classList.add('is-invalid');
+            if (!pageEnd.nextElementSibling || !pageEnd.nextElementSibling.classList.contains('invalid-feedback')) {
+                const feedback = document.createElement('div');
+                feedback.className = 'invalid-feedback';
+                feedback.textContent = 'Halaman akhir harus lebih besar dari halaman awal';
+                pageEnd.parentNode.insertBefore(feedback, pageEnd.nextSibling);
+            }
+        } else {
+            pageEnd.classList.remove('is-invalid');
+            if (pageEnd.nextElementSibling && pageEnd.nextElementSibling.classList.contains('invalid-feedback')) {
+                pageEnd.nextElementSibling.remove();
+            }
+        }
+    }
+
+    pageStart.addEventListener('input', validatePages);
+    pageEnd.addEventListener('input', validatePages);
+
+    // Dynamic loading for faculty and department based on institution
+    const institutionSelect = document.getElementById('institution_code');
+    const facultySelect = document.getElementById('faculty_code');
+    const departmentSelect = document.getElementById('department_code');
+
+    institutionSelect.addEventListener('change', function() {
+        const institutionCode = this.value;
+
+        // Reset faculty and department
+        facultySelect.innerHTML = '<option value="">Pilih Fakultas</option>';
+        departmentSelect.innerHTML = '<option value="">Pilih Departemen</option>';
+
+        if (institutionCode) {
+            fetch(`/api/faculties/${institutionCode}`)
+                .then(response => response.json())
+                .then(faculties => {
+                    faculties.forEach(faculty => {
+                        const option = new Option(faculty.faculty_name, faculty.faculty_code);
+                        facultySelect.add(option);
+                    });
+                })
+                .catch(error => console.error('Error loading faculties:', error));
+        }
+    });
+
+    facultySelect.addEventListener('change', function() {
+        const facultyCode = this.value;
+
+        // Reset department
+        departmentSelect.innerHTML = '<option value="">Pilih Departemen</option>';
+
+        if (facultyCode) {
+            fetch(`/api/departments/${facultyCode}`)
+                .then(response => response.json())
+                .then(departments => {
+                    departments.forEach(department => {
+                        const option = new Option(department.name, department.department_code);
+                        departmentSelect.add(option);
+                    });
+                })
+                .catch(error => console.error('Error loading departments:', error));
+        }
+    });
+});
+</script>
+@endsection

@@ -44,7 +44,9 @@
 
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
+                        @if(Auth::check())
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+
                             {{ Auth::user()->fullname }}
                         </a>
                         <ul class="dropdown-menu">
@@ -57,6 +59,7 @@
                                 </form>
                             </li>
                         </ul>
+                        @endif
                     </li>
                 </ul>
             </div>

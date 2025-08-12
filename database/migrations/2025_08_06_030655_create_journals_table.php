@@ -25,6 +25,9 @@ return new class extends Migration
             $table->text('keywords')->nullable();
             $table->string('author_id',255)->nullable();
             $table->string('category_id',255)->nullable();
+            $table->string('faculty_code',255)->nullable();
+            $table->string('department_code',255)->nullable();
+            $table->string('institution_code',255)->nullable();
             $table->string('doi')->nullable()->unique();
             $table->string('issn')->nullable();
             $table->string('volume')->nullable();

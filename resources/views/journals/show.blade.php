@@ -80,9 +80,9 @@
                         @endcan
                     </div>
                     <div class="card-body">
-                        @if($journal->journalAuthors->count() > 0)
+                        @if($journal->coAuthors->count() > 0)
                             <div class="list-group list-group-flush">
-                                @foreach($journal->journalAuthors as $author)
+                                @foreach($journal->coAuthors as $author)
                                     <div class="list-group-item px-0">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
@@ -131,7 +131,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Universitas:</strong></td>
-                                <td>{{ $journal->institution->institution_name }}</td>
+                                <td>{{ $journal->universitas->institution_name }}</td>
                             </tr>
                             <tr>
                                 <td><strong>Fakultas:</strong></td>
