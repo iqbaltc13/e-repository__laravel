@@ -25,7 +25,7 @@ class Journal extends Model
 
     protected $casts = [
         'publication_date' => 'date',
-        'keywords' => 'array'
+        //'keywords' => 'array'
     ];
 
     protected static function boot()

@@ -58,10 +58,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="keyword" class="form-label">Kata Kunci <span class="text-danger">*</span></label>
-                        <textarea class="form-control @error('keyword') is-invalid @enderror"
-                                  id="keyword" name="keyword" rows="2" required>{{ old('keyword', $journal->keyword) }}</textarea>
-                        @error('keyword')
+                        <label for="keywords" class="form-label">Kata Kunci <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('keywords') is-invalid @enderror"
+                                  id="keywords" name="keywords" rows="2" required>{{ old('keywords', $journal->keywords) }}</textarea>
+                        @error('keywords')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <small class="form-text text-muted">Pisahkan kata kunci dengan koma (,)</small>
@@ -184,20 +184,20 @@
                         </div>
                         <div class="col-md-2">
                             <div class="mb-3">
-                                <label for="page_start" class="form-label">Halaman Awal</label>
-                                <input type="number" class="form-control @error('page_start') is-invalid @enderror"
-                                       id="page_start" name="page_start" value="{{ old('page_start', $journal->page_start) }}" min="1">
-                                @error('page_start')
+                                <label for="pages_start" class="form-label">Halaman Awal</label>
+                                <input type="number" class="form-control @error('pages_start') is-invalid @enderror"
+                                       id="pages_start" name="pages_start" value="{{ old('pages_start', $journal->pages_start) }}" min="1">
+                                @error('pages_start')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="mb-3">
-                                <label for="page_end" class="form-label">Halaman Akhir</label>
-                                <input type="number" class="form-control @error('page_end') is-invalid @enderror"
-                                       id="page_end" name="page_end" value="{{ old('page_end', $journal->page_end) }}" min="1">
-                                @error('page_end')
+                                <label for="pages_end" class="form-label">Halaman Akhir</label>
+                                <input type="number" class="form-control @error('pages_end') is-invalid @enderror"
+                                       id="pages_end" name="pages_end" value="{{ old('pages_end', $journal->pages_end) }}" min="1">
+                                @error('pages_end')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -261,7 +261,7 @@
                     <!-- Current Files Display -->
                     <h6 class="mb-3 mt-4">File Saat Ini</h6>
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
                                     <h6 class="card-title">File PDF Jurnal</h6>
@@ -270,7 +270,7 @@
                                             <i class="fas fa-file-pdf text-danger"></i>
                                             {{ basename($journal->pdf_file) }}
                                         </p>
-                                        <a href="{{ route('journals.download', $journal) }}"
+                                        <a href="{{ route('journals.download', $journal) }}" target="_blank"
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-download"></i> Download
                                         </a>
@@ -280,19 +280,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
                                     <h6 class="card-title">Dokumen Pendukung</h6>
                                     @if($journal->other_document_file)
-                                        <p class="card-text">
-                                            <i class="fas fa-file text-info"></i>
-                                            {{ basename($journal->other_document_file) }}
-                                        </p>
-                                        <a href="{{ Storage::url($journal->other_document_file) }}"
-                                           class="btn btn-sm btn-outline-primary" target="_blank">
-                                            <i class="fas fa-external-link-alt"></i> Buka
-                                        </a>
+
+                                        @foreach($filesPendukung as $file)
+                                            <p class="card-text" style="padding-top: 15px;>
+                                                <i class="fas fa-file text-info"></i>
+                                                {{ basename($file) }}
+                                            </p>
+                                            <a href="{{ $file }}" "
+                                            class="btn btn-sm btn-outline-primary" target="_blank">
+                                                <i class="fas fa-external-link-alt"></i> Buka
+                                            </a>
+
+                                        @endforeach
                                     @else
                                         <p class="card-text text-muted">Tidak ada dokumen pendukung</p>
                                     @endif
@@ -302,28 +306,30 @@
                     </div>
 
                     <!-- File Upload -->
-                    <h6 class="mb-3 mt-4">Update File <small class="text-muted">(Opsional - kosongkan jika tidak ingin mengubah)</small></h6>
+                    <h6 class="mb-3 mt-4">Update Link File <small class="text-muted">(Opsional - kosongkan jika tidak ingin mengubah)</small></h6>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="pdf_file" class="form-label">File PDF Jurnal Baru</label>
-                                <input type="file" class="form-control @error('pdf_file') is-invalid @enderror"
-                                       id="pdf_file" name="pdf_file" accept=".pdf">
+                                <input type="text" class="form-control @error('pdf_file') is-invalid @enderror"
+                                       id="pdf_file" name="pdf_file" value="{{ $journal->pdf_file }}">
                                 @error('pdf_file')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="form-text text-muted">Format: PDF, Maksimal: 10MB. Kosongkan jika tidak ingin mengubah file.</small>
+                                <small class="form-text text-muted">Format: Link PDF. Abaikan jika tidak ingin mengubah file.</small>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="other_document_file" class="form-label">Dokumen Pendukung Baru</label>
-                                <input type="file" class="form-control @error('other_document_file') is-invalid @enderror"
-                                       id="other_document_file" name="other_document_file">
+                                <textarea class="form-control @error('other_document_file') is-invalid @enderror"
+                                       id="other_document_file" name="other_document_file" rows="3">
+                                       {{ $journal->other_document_file }}
+                                    </textarea>
                                 @error('other_document_file')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="form-text text-muted">Opsional, Maksimal: 10MB. Kosongkan jika tidak ingin mengubah file.</small>
+                                <small class="form-text text-muted">Pisahkan link dokumen pendukung dengan Pipe (|)</small>
                             </div>
                         </div>
                     </div>
@@ -377,8 +383,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Page validation
-    const pageStart = document.getElementById('page_start');
-    const pageEnd = document.getElementById('page_end');
+    const pageStart = document.getElementById('pages_start');
+    const pageEnd = document.getElementById('pages_end');
 
     function validatePages() {
         const start = parseInt(pageStart.value) || 0;

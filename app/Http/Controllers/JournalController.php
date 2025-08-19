@@ -43,7 +43,7 @@ class JournalController extends Controller
             $query->where(function($q) use ($request) {
                 $q->where('journal_name', 'LIKE', "%{$request->search}%")
                   ->orWhere('abstract', 'LIKE', "%{$request->search}%")
-                  ->orWhere('keyword', 'LIKE', "%{$request->search}%");
+                  ->orWhere('keywords', 'LIKE', "%{$request->search}%");
             });
         }
 
@@ -72,13 +72,13 @@ class JournalController extends Controller
         $request->validate([
             'journal_name' => 'required|string|max:255',
             'abstract' => 'required|string',
-            'keyword' => 'required|string',
+            'keywords' => 'required|string',
             'category_id' => 'required|exists:journal_categories,id',
             'institution_code' => 'required|exists:institutions,institution_code',
             'faculty_code' => 'required|exists:faculties,faculty_code',
             'department_code' => 'required|exists:departments,department_code',
-            'pdf_file' => 'required|file|mimes:pdf|max:10240',
-            'other_document_file' => 'nullable|file|max:10240',
+            'pdf_file' => 'required|string',
+            'other_document_file' => 'nullable|string',
             'language' => 'required|in:id,en,es,fr,de,ja,ko,pt,ru,zh',
             'status' => 'required|in:draft,submitted,under_review,accepted,published,rejected',
         ]);
@@ -86,16 +86,6 @@ class JournalController extends Controller
         $data = $request->all();
         $data['author_id'] = Auth::id();
         $data['slug'] = Str::slug($request->journal_name . '-' . time());
-
-        // Upload PDF file
-        if ($request->hasFile('pdf_file')) {
-            $data['pdf_file'] = $request->file('pdf_file')->store('journals/pdf', 'public');
-        }
-
-        // Upload other document file
-        if ($request->hasFile('other_document_file')) {
-            $data['other_document_file'] = $request->file('other_document_file')->store('journals/documents', 'public');
-        }
 
         $journal = Journal::create($data);
 
@@ -106,8 +96,8 @@ class JournalController extends Controller
     {
         $journal->load(['author', 'category', 'universitas', 'faculty', 'department', 'coAuthors']);
         $journal->incrementViews();
-
-        return view('journals.show', compact('journal'));
+        $filesPendukung  = isset($journal->other_document_file) ? explode('|', $journal->other_document_file) : [];
+        return view('journals.show', compact('journal', 'filesPendukung'));
     }
 
     public function edit(Journal $journal)
@@ -118,8 +108,10 @@ class JournalController extends Controller
         $institutions = Institution::where('status', 'aktif')->get();
         $faculties = Faculty::where('status', 'aktif')->get();
         $departments = Department::all();
+        $filesPendukung  = isset($journal->other_document_file) ? explode('|', $journal->other_document_file) : [];
 
-        return view('journals.edit', compact('journal', 'categories', 'institutions', 'faculties', 'departments'));
+
+        return view('journals.edit', compact('journal', 'categories', 'institutions', 'faculties', 'departments', 'filesPendukung'));
     }
 
     public function update(Request $request, Journal $journal)
@@ -129,33 +121,15 @@ class JournalController extends Controller
         $request->validate([
             'journal_name' => 'required|string|max:255',
             'abstract' => 'required|string',
-            'keyword' => 'required|string',
+            'keywords' => 'required|string',
             'category_id' => 'required|exists:journal_categories,id',
-            'pdf_file' => 'nullable|file|mimes:pdf|max:10240',
-            'other_document_file' => 'nullable|file|max:10240',
+            'pdf_file' => 'nullable|string',
+            'other_document_file' => 'nullable|string',
             'language' => 'required|in:id,en,es,fr,de,ja,ko,pt,ru,zh',
             'status' => 'required|in:draft,submitted,under_review,accepted,published,rejected',
         ]);
 
         $data = $request->all();
-
-        // Update PDF file if new file uploaded
-        if ($request->hasFile('pdf_file')) {
-            // Delete old file
-            if ($journal->pdf_file) {
-                Storage::disk('public')->delete($journal->pdf_file);
-            }
-            $data['pdf_file'] = $request->file('pdf_file')->store('journals/pdf', 'public');
-        }
-
-        // Update other document file if new file uploaded
-        if ($request->hasFile('other_document_file')) {
-            // Delete old file
-            if ($journal->other_document_file) {
-                Storage::disk('public')->delete($journal->other_document_file);
-            }
-            $data['other_document_file'] = $request->file('other_document_file')->store('journals/documents', 'public');
-        }
 
         $journal->update($data);
 
@@ -167,12 +141,7 @@ class JournalController extends Controller
         $this->authorize('delete', $journal);
 
         // Delete files
-        if ($journal->pdf_file) {
-            Storage::disk('public')->delete($journal->pdf_file);
-        }
-        if ($journal->other_document_file) {
-            Storage::disk('public')->delete($journal->other_document_file);
-        }
+
 
         $journal->delete();
 
@@ -181,13 +150,14 @@ class JournalController extends Controller
 
     public function download(Journal $journal)
     {
-        if (!$journal->pdf_file || !Storage::disk('public')->exists($journal->pdf_file)) {
+        if (!$journal->pdf_file ) {
             return redirect()->back()->with('error', 'File tidak ditemukan!');
         }
 
         $journal->incrementDownloads();
 
-        return Storage::disk('public')->download($journal->pdf_file, $journal->journal_name . '.pdf');
+        return redirect()->away($journal->pdf_file);
+
     }
 
     public function publish(Journal $journal)

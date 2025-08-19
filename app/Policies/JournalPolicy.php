@@ -17,24 +17,24 @@ class JournalPolicy
 
      public function create(User $user)
     {
-        return $user->isMember() || $user->isAdmin();
+        return $user->isEditor() || $user->isAdmin();
     }
 
     public function update(User $user, Journal $journal)
     {
         return $user->isAdmin() ||
-               ($user->isMember() && $journal->author_id === $user->id);
+               ($user->isEditor() && $journal->author_id === $user->id);
     }
 
     public function delete(User $user, Journal $journal)
     {
         return $user->isAdmin() ||
-               ($user->isMember() && $journal->author_id === $user->id);
+               ($user->isEditor() && $journal->author_id === $user->id);
     }
 
     public function publish(User $user, Journal $journal)
     {
-        return $user->isAdmin() || $user->isMember();
+        return $user->isAdmin() || $user->isEditor();
     }
 
 

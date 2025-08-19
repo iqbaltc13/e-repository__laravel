@@ -21,7 +21,7 @@
                 </div>
                 <div class="btn-group">
                     @can('update', $journal)
-                        <a href="{{ route('journals.edit', $journal) }}" class="btn btn-primary">
+                        <a href="{{ route('journals.edit', $journal) }}" class="btn btn-primary" style="height: 86px;">
                             <i class="fas fa-edit"></i> Edit
                         </a>
                     @endcan
@@ -30,14 +30,14 @@
                             <form method="POST" action="{{ route('journals.publish', $journal) }}" class="d-inline">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn btn-success"
+                                <button type="submit" class="btn btn-success" style="height: 86px;"
                                         onclick="return confirm('Yakin ingin mempublish jurnal ini?')">
                                     <i class="fas fa-globe"></i> Publish
                                 </button>
                             </form>
                         @endif
                     @endcan
-                    <a href="{{ route('journals.download', $journal) }}" class="btn btn-outline-primary">
+                    <a href="{{ route('journals.download', $journal) }}" class="btn btn-outline-primary"    style="height: 86px;">
                         <i class="fas fa-download"></i> Download PDF
                     </a>
                 </div>
@@ -53,7 +53,7 @@
                         <h6 class="card-title mb-0">Abstrak</h6>
                     </div>
                     <div class="card-body">
-                        <p class="text-justify">{{ $journal->abstract }}</p>
+                        <p class="text-justify">{{ Str::replace(["\r", "\n"], '<br>', $journal->abstract) }}</p>
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@
                         <h6 class="card-title mb-0">Kata Kunci</h6>
                     </div>
                     <div class="card-body">
-                        @foreach(explode(',', $journal->keyword) as $keyword)
+                        @foreach(explode(',', $journal->keywords) as $keyword)
                             <span class="badge bg-secondary me-1 mb-1">{{ trim($keyword) }}</span>
                         @endforeach
                     </div>
@@ -159,10 +159,10 @@
                                     <td>{{ $journal->publisher }}</td>
                                 </tr>
                             @endif
-                            @if($journal->page_start && $journal->page_end)
+                            @if($journal->pages_start && $journal->pages_end)
                                 <tr>
                                     <td><strong>Halaman:</strong></td>
-                                    <td>{{ $journal->page_start }}-{{ $journal->page_end }}</td>
+                                    <td>{{ $journal->pages_start }}-{{ $journal->pages_end }}</td>
                                 </tr>
                             @endif
                             <tr>
@@ -198,10 +198,13 @@
                                 <i class="fas fa-file-pdf"></i> Download PDF Jurnal
                             </a>
                             @if($journal->other_document_file)
-                                <a href="{{ Storage::url($journal->other_document_file) }}"
+                                @foreach ($filesPendukung as $file)
+                                <a href="{{ $file }}"
                                    class="btn btn-outline-secondary" target="_blank">
-                                    <i class="fas fa-file"></i> Dokumen Pendukung
+                                    <i class="fas fa-file"></i> Dokumen Pendukung {{$loop->iteration }}
                                 </a>
+                                @endforeach
+
                             @endif
                         </div>
                     </div>
@@ -210,4 +213,6 @@
         </div>
     </div>
 </div>
+
+
 @endsection

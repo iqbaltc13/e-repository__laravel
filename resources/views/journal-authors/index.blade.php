@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <p class="mb-2"><strong>Abstrak:</strong> {{ Str::limit($journal->abstract, 200) }}</p>
-                        <p class="mb-2"><strong>Kata Kunci:</strong> {{ $journal->keyword }}</p>
+                        <p class="mb-2"><strong>Kata Kunci:</strong> {{ $journal->keywords }}</p>
                         <p class="mb-0">
                             <strong>Status:</strong>
                             <span class="badge bg-{{ $journal->status === 'published' ? 'success' : 'warning' }}">
