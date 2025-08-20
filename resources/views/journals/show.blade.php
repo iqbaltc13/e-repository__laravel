@@ -123,23 +123,31 @@
                             <tr>
                                 <td><strong>Kategori:</strong></td>
                                 <td>
+                                    @if(!is_null($journal->category))
                                     <a href="{{ route('journal-categories.show', $journal->category) }}"
                                        class="text-decoration-none">
                                         {{ $journal->category->name }}
                                     </a>
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td><strong>Universitas:</strong></td>
+                                @if(!is_null($journal->universitas))
                                 <td>{{ $journal->universitas->institution_name }}</td>
+                                @endif
                             </tr>
                             <tr>
                                 <td><strong>Fakultas:</strong></td>
+                                @if(!is_null($journal->faculty))
                                 <td>{{ $journal->faculty->faculty_name }}</td>
+                                @endif
                             </tr>
                             <tr>
-                                <td><strong>Departemen:</strong></td>
+                                <td><strong>Departemen/Prodi:</strong></td>
+                                @if(!is_null($journal->department))
                                 <td>{{ $journal->department->name }}</td>
+                                @endif
                             </tr>
                             @if($journal->doi)
                                 <tr>

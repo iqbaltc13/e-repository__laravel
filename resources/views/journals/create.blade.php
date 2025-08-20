@@ -27,7 +27,7 @@
                             <div class="mb-3">
                                 <label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
                                 <select class="form-select @error('category_id') is-invalid @enderror"
-                                        id="category_id" name="category_id" required>
+                                        id="category_id" name="category_id" >
                                     <option value="">Pilih Kategori</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -86,7 +86,7 @@
                             <div class="mb-3">
                                 <label for="faculty_code" class="form-label">Fakultas <span class="text-danger">*</span></label>
                                 <select class="form-select @error('faculty_code') is-invalid @enderror"
-                                        id="faculty_code" name="faculty_code" required>
+                                        id="faculty_code" name="faculty_code" >
                                     <option value="">Pilih Fakultas</option>
                                     @foreach($faculties as $faculty)
                                         <option value="{{ $faculty->faculty_code }}"
@@ -102,10 +102,10 @@
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="department_code" class="form-label">Departemen <span class="text-danger">*</span></label>
+                                <label for="department_code" class="form-label">Departemen/Prodi <span class="text-danger">*</span></label>
                                 <select class="form-select @error('department_code') is-invalid @enderror"
-                                        id="department_code" name="department_code" required>
-                                    <option value="">Pilih Departemen</option>
+                                        id="department_code" name="department_code" >
+                                    <option value="">Pilih Departemen/Prodi</option>
                                     @foreach($departments as $department)
                                         <option value="{{ $department->department_code }}"
                                                 {{ old('department_code') == $department->department_code ? 'selected' : '' }}>

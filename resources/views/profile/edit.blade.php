@@ -1,18 +1,18 @@
 @extends('layouts.app')
-
-@section('title', 'Register')
+@section('title', 'Edit Profile')
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-10">
         <div class="card shadow">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Daftar Akun Baru</h4>
+                <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Edit Profile</h4>
+
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ route('profile.update') }}">
                     @csrf
-
+                    @method('PUT')
                     <div class="row">
                         <!-- Basic Information -->
                         <div class="col-md-6">
@@ -21,16 +21,15 @@
                             <div class="mb-3">
                                 <label for="full_name" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                                 <input id="full_name" type="text" class="form-control @error('full_name') is-invalid @enderror"
-                                       name="full_name" value="{{ old('full_name') }}" required autofocus>
+                                       name="full_name" value="{{ old('full_name', $user->full_name) }}" required autofocus>
                                 @error('full_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username/NIM<span class="text-danger">*</span></label>
                                 <input id="username" type="text" class="form-control @error('username') is-invalid @enderror"
-                                       name="username" value="{{ old('username') }}" required>
+                                       name="username" value="{{ old('username',$user->username) }}" required>
                                 {{-- <small class="form-text text-muted">Username/NIM akan digunakan untuk login</small> --}}
                                 @error('username')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -40,32 +39,24 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                                       name="email" value="{{ old('email') }}" required>
+                                       name="email" value="{{ old('email', $user->email) }}" required>
                                 <small class="form-text text-muted">Email akan digunakan untuk verifikasi akun</small>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                                       name="password" required>
-                                @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-                                <input id="password_confirmation" type="password" class="form-control"
-                                       name="password_confirmation" required>
-                            </div>
+
+
+
+
+
 
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Nomor Telepon</label>
                                 <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror"
-                                       name="phone" value="{{ old('phone') }}" placeholder="+628123456789">
+                                       name="phone" value="{{ old('phone', $user->phone) }}" placeholder="+628123456789">
                                 @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -88,7 +79,7 @@
                             <div class="mb-3">
                                 <label for="organization" class="form-label">Organisasi/Kampus/Institusi</label>
                                 <input id="organization" type="text" class="form-control @error('organization') is-invalid @enderror"
-                                       name="organization" value="{{ old('organization') }}" placeholder="Nama organisasi tempat bekerja">
+                                       name="organization" value="{{ old('organization', $user->organization) }}" placeholder="Nama organisasi tempat bekerja">
                                 @error('organization')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -133,7 +124,7 @@
                             <div class="mb-3">
                                 <label for="address" class="form-label">Alamat</label>
                                 <textarea id="address" class="form-control @error('address') is-invalid @enderror"
-                                          name="address" rows="3" placeholder="Alamat lengkap">{{ old('address') }}</textarea>
+                                          name="address" rows="3" placeholder="Alamat lengkap">{{ old('address', $user->address) }}</textarea>
                                 @error('address')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -146,7 +137,7 @@
                             <div class="mb-4">
                                 <label for="bio" class="form-label">Bio/Deskripsi Diri</label>
                                 <textarea id="bio" class="form-control @error('bio') is-invalid @enderror"
-                                          name="bio" rows="3" placeholder="Ceritakan tentang diri Anda...">{{ old('bio') }}</textarea>
+                                          name="bio" rows="3" placeholder="Ceritakan tentang diri Anda...">{{ old('bio', $user->bio) }}</textarea>
                                 @error('bio')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -155,29 +146,21 @@
                     </div>
 
                     <!-- Terms and Conditions -->
-                    <div class="mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="terms" required>
-                            <label class="form-check-label" for="terms">
-                                Saya setuju dengan <a href="#" target="_blank">syarat dan ketentuan</a> yang berlaku
-                            </label>
-                        </div>
-                    </div>
+
 
                     <div class="d-grid">
+                        <a href="{{ route('profile.show') }}" class="btn btn-secondary btn-lg ">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
                         <button type="submit" class="btn btn-success btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Daftar Sekarang
+                            <i class="fas fa-user-plus me-2"></i>Simpan Perubahan
                         </button>
                     </div>
 
-                    <hr class="my-4">
+
 
                     <div class="text-center">
-                        <p class="mb-0">Sudah punya akun?
-                            <a href="{{ route('login') }}" class="text-decoration-none text-primary fw-bold">
-                                <i class="fas fa-sign-in-alt me-1"></i>Silakan masuk
-                            </a>
-                        </p>
+
                     </div>
                 </form>
             </div>
@@ -186,22 +169,7 @@
         <!-- Password Requirements Info -->
         <div class="card mt-3">
             <div class="card-body">
-                <h6 class="text-primary"><i class="fas fa-shield-alt me-2"></i>Persyaratan Password</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-unstyled mb-0">
-                            <li><i class="fas fa-check text-success me-2"></i>Minimal 8 karakter</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Mengandung huruf besar</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Mengandung huruf kecil</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="list-unstyled mb-0">
-                            <li><i class="fas fa-check text-success me-2"></i>Mengandung angka</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Mengandung karakter khusus</li>
-                        </ul>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -210,18 +178,7 @@
 @push('scripts')
 <script>
 // Real-time password validation
-document.getElementById('password').addEventListener('input', function() {
-    const password = this.value;
-    const requirements = [
-        { regex: /.{8,}/, text: 'Minimal 8 karakter' },
-        { regex: /[A-Z]/, text: 'Mengandung huruf besar' },
-        { regex: /[a-z]/, text: 'Mengandung huruf kecil' },
-        { regex: /\d/, text: 'Mengandung angka' },
-        { regex: /[@$!%*?&]/, text: 'Mengandung karakter khusus' }
-    ];
 
-    // You can add visual feedback here
-});
 </script>
 @endpush
 @endsection

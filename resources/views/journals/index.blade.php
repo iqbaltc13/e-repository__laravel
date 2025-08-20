@@ -74,7 +74,9 @@
                         <small class="text-muted">
                             <i class="fas fa-user"></i> {{ $journal->author ? $journal->author->fullname : '' }}<br>
                             <i class="fas fa-building"></i> {{ $journal->faculty->faculty_name }}<br>
-                            <i class="fas fa-tag"></i> {{ $journal->category->name }}
+                            @if($journal->category)
+                                <i class="fas fa-tag"></i> {{ $journal->category->name }}
+                            @endif
                         </small>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">

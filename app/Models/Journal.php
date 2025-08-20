@@ -37,12 +37,12 @@ class Journal extends Model
                 $journal->id = 'JOURNAL_' . strtoupper(Str::random(8));
                 // Generates something like: USER_A1B2C3D4
             }
-            $journal->slug = Str::slug($journal->title);
+            $journal->slug = Str::slug($journal->journal_name . '-'). now()->format('YmdHis');
         });
 
         static::updating(function ($journal) {
-            if ($journal->isDirty('title')) {
-                $journal->slug = Str::slug($journal->title);
+            if ($journal->isDirty('journal_name')) {
+                $journal->slug = Str::slug($journal->journal_name . '-'). now()->format('YmdHis');
             }
         });
     }

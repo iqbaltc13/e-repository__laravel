@@ -75,8 +75,8 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->load(['institution', 'faculty', 'departmentRelation', 'journals']);
-        return view('users.show', compact('user'));
+        $user->load(['institution', 'faculty', 'prodi', 'journals']);
+        return view('profile.show', compact('user'));
     }
 
     public function edit(User $user)
@@ -128,4 +128,28 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
     }
+    public function resetPassword(User $user)
+    {
+        $newPassword = 'password123';
+        $user->update([
+            'password' => Hash::make($newPassword)
+        ]);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "Password user {$user->full_name} berhasil direset ke: {$newPassword}");
+    }
+
+    public function verifyEmail(User $user)
+    {
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route('admin.users.index')
+                ->with('info', 'Email sudah terverifikasi');
+        }
+
+        $user->markEmailAsVerified();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Email berhasil diverifikasi');
+    }
+
 }

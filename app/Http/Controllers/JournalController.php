@@ -73,10 +73,10 @@ class JournalController extends Controller
             'journal_name' => 'required|string|max:255',
             'abstract' => 'required|string',
             'keywords' => 'required|string',
-            'category_id' => 'required|exists:journal_categories,id',
+            'category_id' => 'nullable|exists:journal_categories,id',
             'institution_code' => 'required|exists:institutions,institution_code',
-            'faculty_code' => 'required|exists:faculties,faculty_code',
-            'department_code' => 'required|exists:departments,department_code',
+            'faculty_code' => 'nullable|exists:faculties,faculty_code',
+            'department_code' => 'nullable|exists:departments,department_code',
             'pdf_file' => 'required|string',
             'other_document_file' => 'nullable|string',
             'language' => 'required|in:id,en,es,fr,de,ja,ko,pt,ru,zh',
@@ -85,7 +85,8 @@ class JournalController extends Controller
 
         $data = $request->all();
         $data['author_id'] = Auth::id();
-        $data['slug'] = Str::slug($request->journal_name . '-' . time());
+
+        $data['slug'] = Str::slug($request->journal_name . '-'). now()->format('YmdHis');
 
         $journal = Journal::create($data);
 
@@ -122,7 +123,7 @@ class JournalController extends Controller
             'journal_name' => 'required|string|max:255',
             'abstract' => 'required|string',
             'keywords' => 'required|string',
-            'category_id' => 'required|exists:journal_categories,id',
+            'category_id' => 'nullable|exists:journal_categories,id',
             'pdf_file' => 'nullable|string',
             'other_document_file' => 'nullable|string',
             'language' => 'required|in:id,en,es,fr,de,ja,ko,pt,ru,zh',

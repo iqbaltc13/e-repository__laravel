@@ -47,10 +47,14 @@
                         @if(Auth::check())
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
 
-                            {{ Auth::user()->fullname }}
+                            {{ Auth::user()->full_name }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('users.show', Auth::user()) }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('password.change') }}">
+                                <i class="fas fa-key me-1"></i>Change Password
+                            </a></li>
+
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">

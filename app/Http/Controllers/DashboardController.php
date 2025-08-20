@@ -51,4 +51,25 @@ class DashboardController extends Controller
             'recentJournals', 'popularJournals'
         ));
     }
+
+    public function indexUser()
+    {
+        $user = auth()->user();
+
+        $stats = [];
+
+        if ($user->isAdmin()) {
+            $stats = [
+                'total_users' => User::count(),
+                'total_admins' => User::where('role', 'admin')->count(),
+                'total_editors' => User::where('role', 'editor')->count(),
+                'total_members' => User::where('role', 'member')->count(),
+                'verified_users' => User::whereNotNull('email_verified_at')->count(),
+                'unverified_users' => User::whereNull('email_verified_at')->count(),
+                'recent_users' => User::latest()->take(5)->get(),
+            ];
+        }
+
+        return view('dashboard', compact('user', 'stats'));
+    }
 }
