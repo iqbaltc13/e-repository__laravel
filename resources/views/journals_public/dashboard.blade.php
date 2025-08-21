@@ -8,7 +8,7 @@
 </div>
 
 <div class="row mb-4">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card bg-primary text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card bg-success text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -56,7 +56,7 @@
         </div>
     </div> --}}
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="card bg-warning text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
@@ -72,21 +72,7 @@
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">{{ $userJournals }}</h4>
-                        <p class="card-text">Jurnal Saya</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-user-edit fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 
 <div class="row">
@@ -100,7 +86,7 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom py-2">
                         <div>
                             <h6 class="mb-1">
-                                <a href="{{ route('journals.show', $journal) }}" class="text-decoration-none">
+                                <a href="{{ route('journals.public.show', $journal) }}" class="text-decoration-none">
                                     {{ strip_tags(html_entity_decode(Str::limit($journal->journal_name, 50))) }}
                                 </a>
                             </h6>

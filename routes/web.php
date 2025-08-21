@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JournalPublicController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 use PgSql\Lob;
 
@@ -113,7 +114,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 Auth::routes();
+Route::post('/submit-reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset-submit');
+
 // Public routes (untuk akses tanpa login)
+Route::get('/journals-public-dashboard', [JournalPublicController::class, 'dashboard'])->name('journals.public.dashboard');
 Route::get('/journals-public', [JournalPublicController::class, 'index'])->name('journals.public');
 Route::get('/journals-public/{journal}', [JournalPublicController::class, 'show'])->name('journals.public.show');
 Route::get('/journals-public/{journal}/download', [JournalPublicController::class, 'download'])->name('journals.public.download');

@@ -21,9 +21,9 @@
                 </div>
                 <div class="btn-group">
 
-                    <a href="{{ route('journals.public.download', $journal) }}" target="_blank" class="btn btn-outline-primary"    style="height: 86px;">
+                    {{-- <a href="{{ route('journals.public.download', $journal) }}" target="_blank" class="btn btn-outline-primary"    style="height: 86px;">
                         <i class="fas fa-download"></i> Download PDF
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </div>

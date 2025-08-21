@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\User;
+use Intervention\Image\Colors\Rgb\Channels\Red;
 
 class JournalPublicController extends Controller
 {
@@ -43,8 +45,35 @@ class JournalPublicController extends Controller
         $journals = $query->paginate(10);
         $categories = JournalCategory::all();
 
+        $totalJournals = Journal::whereNotNull('journal_name')->whereIn('status', [ 'submitted',  'published'])->count();
+        $totalUsers = User::where('role','|=' ,'admin')->count();
+        $totalCategories = JournalCategory::count();
+        $totalInstitutions = Institution::count();
 
-        return view('journals_public.index', compact('journals', 'categories'));
+        // User specific stats
+
+        $publishedJournals = Journal::whereNotNull('journal_name')->where('status', 'published')->count();
+        $underReviewJournals = Journal::whereNotNull('journal_name')->where('status', 'under_review')->count();
+        $submittedJournals = Journal::whereNotNull('journal_name')->where('status', 'submitted')->count();
+        // Recent journals
+        $recentJournals = Journal::with(['author', 'category'])->whereNotNull('journal_name')->whereIn('status', [ 'submitted',  'published'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        // Most viewed journals
+        $popularJournals = Journal::with(['author', 'category'])
+            ->whereNotNull('journal_name')
+            ->whereIn('status', [ 'submitted',  'published'])
+            ->orderBy('views_count', 'desc')
+            ->limit(5)
+            ->get();
+
+
+
+        return view('journals_public.index', compact('journals', 'categories', 'totalJournals', 'totalUsers', 'totalCategories', 'totalInstitutions',
+            'publishedJournals', 'underReviewJournals',
+            'recentJournals', 'popularJournals','submittedJournals'));
     }
 
 
@@ -69,6 +98,43 @@ class JournalPublicController extends Controller
         return redirect()->away($journal->pdf_file);
 
     }
+
+    public function dashboard(Request $request)
+    {
+
+
+        // Statistics
+        $totalJournals = Journal::whereNotNull('journal_name')->whereIn('status', [ 'submitted',  'published'])->count();
+        $totalUsers = User::where('role','|=' ,'admin')->count();
+        $totalCategories = JournalCategory::count();
+        $totalInstitutions = Institution::count();
+
+        // User specific stats
+
+        $publishedJournals = Journal::whereNotNull('journal_name')->where('status', 'published')->count();
+        $underReviewJournals = Journal::whereNotNull('journal_name')->where('status', 'under_review')->count();
+        $submittedJournals = Journal::whereNotNull('journal_name')->where('status', 'submitted')->count();
+        // Recent journals
+        $recentJournals = Journal::with(['author', 'category'])->whereNotNull('journal_name')->whereIn('status', [ 'submitted',  'published'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        // Most viewed journals
+        $popularJournals = Journal::with(['author', 'category'])
+            ->whereNotNull('journal_name')
+            ->whereIn('status', [ 'submitted',  'published'])
+            ->orderBy('views_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('journals_public.dashboard', compact(
+            'totalJournals', 'totalUsers', 'totalCategories', 'totalInstitutions',
+            'publishedJournals', 'underReviewJournals',
+            'recentJournals', 'popularJournals','submittedJournals'
+        ));
+    }
+
 
 
 }

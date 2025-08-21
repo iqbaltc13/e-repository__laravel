@@ -34,6 +34,12 @@
             <div class="collapse navbar-collapse" id="navbarNav" style="padding-left: 100px;">
                 <ul class="navbar-nav me-auto">
                     @if (Auth::check())
+
+                    @endif
+                </ul>
+
+                <ul class="navbar-nav">
+                    @if(Auth::check())
                     <li class="nav-item" >
                         <a style="color:whitesmoke !important" class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
@@ -50,11 +56,6 @@
                         <a style="color:whitesmoke !important" class="nav-link" href="{{ route('users.index') }}">Users</a>
                     </li>
                     @endcan
-                    @endif
-                </ul>
-
-                <ul class="navbar-nav">
-                    @if(Auth::check())
                     <li class="nav-item dropdown">
 
                         <a style="color:whitesmoke !important" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
@@ -62,8 +63,8 @@
                             {{ Auth::user()->full_name }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a style="color:whitesmoke !important" class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
-                            <li><a style="color:whitesmoke !important" class="dropdown-item" href="{{ route('password.change') }}">
+                            <li><a style="color:grey !important" class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+                            <li><a style="color:grey !important" class="dropdown-item" href="{{ route('password.change') }}">
                                 <i class="fas fa-key me-1"></i>Change Password
                             </a></li>
 
@@ -71,14 +72,23 @@
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button style="color:whitesmoke !important" type="submit" class="dropdown-item">Logout</button>
+                                    <button style="color:grey !important" type="submit" class="dropdown-item">Logout</button>
                                 </form>
                             </li>
                         </ul>
 
 
                     </li>
+                    <li class="nav-item">
+
+                    </li>
                     @else
+                        <li class="nav-item">
+                            <a style="color:whitesmoke !important" class="nav-link" href="{{ route('journals.public') }}">Jurnal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="color:whitesmoke !important" class="nav-link" href="{{ route('journals.public.dashboard') }}">Dashboard</a>
+                        </li>
                         <li class="nav-item">
                             <a style="color:whitesmoke !important" class="nav-link" href="{{ route('login') }}">Login</a>
                         </li>

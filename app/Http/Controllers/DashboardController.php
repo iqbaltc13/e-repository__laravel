@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Statistics
-        $totalJournals = Journal::whereNotNull('journal_name')->count();
+        $totalJournals = Journal::whereNotNull('journal_name')->whereIn('status', [ 'submitted',  'published'])->count();
         $totalUsers = User::where('role','|=' ,'admin')->count();
         $totalCategories = JournalCategory::count();
         $totalInstitutions = Institution::count();
@@ -31,9 +31,9 @@ class DashboardController extends Controller
         $userJournals = $user->journals()->count();
         $publishedJournals = Journal::whereNotNull('journal_name')->where('status', 'published')->count();
         $underReviewJournals = Journal::whereNotNull('journal_name')->where('status', 'under_review')->count();
-
+        $submittedJournals = Journal::whereNotNull('journal_name')->where('status', 'submitted')->count();
         // Recent journals
-        $recentJournals = Journal::with(['author', 'category'])->whereNotNull('journal_name')
+        $recentJournals = Journal::with(['author', 'category'])->whereNotNull('journal_name')->whereIn('status', [ 'submitted',  'published'])
             ->latest()
             ->limit(5)
             ->get();
@@ -41,6 +41,7 @@ class DashboardController extends Controller
         // Most viewed journals
         $popularJournals = Journal::with(['author', 'category'])
             ->whereNotNull('journal_name')
+            ->whereIn('status', [ 'submitted',  'published'])
             ->orderBy('views_count', 'desc')
             ->limit(5)
             ->get();
@@ -48,7 +49,7 @@ class DashboardController extends Controller
         return view('dashboard', compact(
             'totalJournals', 'totalUsers', 'totalCategories', 'totalInstitutions',
             'userJournals', 'publishedJournals', 'underReviewJournals',
-            'recentJournals', 'popularJournals'
+            'recentJournals', 'popularJournals','submittedJournals'
         ));
     }
 

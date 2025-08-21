@@ -12,7 +12,7 @@
             <div class="card-body">
                 <form method="POST" action="{{ route('profile.update') }}">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
                     <div class="row">
                         <!-- Basic Information -->
                         <div class="col-md-6">
