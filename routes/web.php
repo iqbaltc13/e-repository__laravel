@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JournalPublicController;
 
 use PgSql\Lob;
 
@@ -111,13 +112,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 });
-
-// Public routes (untuk akses tanpa login)
-Route::get('/journals/public', [JournalController::class, 'publicIndex'])->name('journals.public');
-Route::get('/journals/public/{journal}', [JournalController::class, 'publicShow'])->name('journals.public.show');
-Route::get('/journals/public/{journal}/download', [JournalController::class, 'publicDownload'])->name('journals.public.download');
-
-
 Auth::routes();
+// Public routes (untuk akses tanpa login)
+Route::get('/journals-public', [JournalPublicController::class, 'index'])->name('journals.public');
+Route::get('/journals-public/{journal}', [JournalPublicController::class, 'show'])->name('journals.public.show');
+Route::get('/journals-public/{journal}/download', [JournalPublicController::class, 'download'])->name('journals.public.download');
+
+
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

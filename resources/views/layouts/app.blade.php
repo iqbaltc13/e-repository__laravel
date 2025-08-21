@@ -12,46 +12,58 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <i class="fas fa-university"></i> E-Repository UIN Syekh Wasil Kediri
-            </a>
+            @if (Auth::check())
+                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                    <img height="80" src="https://iainkediri.ac.id/assets/uploads/setting/bd169c485f8ab3b7a4e723d8fbe8365e.png" srcset="https://iainkediri.ac.id/assets/uploads/setting/bd169c485f8ab3b7a4e723d8fbe8365e.png 2x" class="img-responsive" alt=""> E-Repository UIN Syekh Wasil Kediri
+                </a>
+            @else
+                <a class="navbar-brand" href="{{ route('journals.public') }}">
+                    <img height="80" src="https://iainkediri.ac.id/assets/uploads/setting/bd169c485f8ab3b7a4e723d8fbe8365e.png" srcset="https://iainkediri.ac.id/assets/uploads/setting/bd169c485f8ab3b7a4e723d8fbe8365e.png 2x" class="img-responsive" alt=""> E-Repository UIN Syekh Wasil Kediri
+                </a>
+
+            @endif
+
+
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav" style="padding-left: 100px;">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                    @if (Auth::check())
+                    <li class="nav-item" >
+                        <a style="color:whitesmoke !important" class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('journals.index') }}">Jurnal</a>
+                        <a style="color:whitesmoke !important" class="nav-link" href="{{ route('journals.index') }}">Jurnal</a>
                     </li>
                     @can('manage-categories')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('journal-categories.index') }}">Kategori</a>
+                        <a style="color:whitesmoke !important" class="nav-link" href="{{ route('journal-categories.index') }}">Kategori</a>
                     </li>
                     @endcan
                     @can('manage-users')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+                        <a style="color:whitesmoke !important" class="nav-link" href="{{ route('users.index') }}">Users</a>
                     </li>
                     @endcan
+                    @endif
                 </ul>
 
                 <ul class="navbar-nav">
+                    @if(Auth::check())
                     <li class="nav-item dropdown">
-                        @if(Auth::check())
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+
+                        <a style="color:whitesmoke !important" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
 
                             {{ Auth::user()->full_name }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{{ route('password.change') }}">
+                            <li><a style="color:whitesmoke !important" class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+                            <li><a style="color:whitesmoke !important" class="dropdown-item" href="{{ route('password.change') }}">
                                 <i class="fas fa-key me-1"></i>Change Password
                             </a></li>
 
@@ -59,12 +71,21 @@
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">Logout</button>
+                                    <button style="color:whitesmoke !important" type="submit" class="dropdown-item">Logout</button>
                                 </form>
                             </li>
                         </ul>
-                        @endif
+
+
                     </li>
+                    @else
+                        <li class="nav-item">
+                            <a style="color:whitesmoke !important" class="nav-link" href="{{ route('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="color:whitesmoke !important" class="nav-link" href="{{ route('register') }}">Daftar</a>
+                        </li>
+                    @endif
                 </ul>
             </div>
         </div>

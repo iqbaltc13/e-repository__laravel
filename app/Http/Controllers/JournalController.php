@@ -26,7 +26,7 @@ class JournalController extends Controller
         $query = Journal::with(['author', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
 
         // Filter berdasarkan role
-        if (Auth::user()->isMember()) {
+        if (Auth::user()->isEditor()) {
             $query->where('author_id', Auth::id());
         }
 

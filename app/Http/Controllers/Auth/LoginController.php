@@ -68,4 +68,13 @@ class LoginController extends Controller
             'login' => 'Kredensial yang diberikan tidak cocok dengan catatan kami.',
         ])->onlyInput('login');
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
+
 }
