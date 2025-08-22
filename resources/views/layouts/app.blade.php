@@ -9,6 +9,34 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+    <style>
+        .filters-row {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        .filter-input {
+            width: 100%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+        .filter-select {
+            width: 100%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+        .table th {
+            vertical-align: top;
+        }
+
+    </style>
+
+
 </head>
 <body>
     <!-- Navigation -->
@@ -133,5 +161,12 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
+    <!-- Bootstrap 4 JS Bundle (includes Popper) -->
+
+    @stack('scripts')
 </body>
 </html>
