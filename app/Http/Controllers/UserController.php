@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -60,9 +61,23 @@ class UserController extends Controller
                     $deleteBtn = '<button class="dropdown-item text-danger" title="Delete" onclick="deleteUser(' . $user->id . ')" title="Delete">
                                     <i class="fas fa-trash me-1"></i>Delete
                                 </button>';
+                    $divGroupDropdownMenu = '<div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-cog"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">';
+
+                    if((!$user->email_verified_at)){
+                        $divGroupDropdownMenu .= '<li> ' . $verifyBtn . '</li>';
+                    }
+                    $divGroupDropdownMenu .= '<li> ' . $resetBtn . '</li>';
+                    if($user->id !== Auth::id()){
+                        $divGroupDropdownMenu .= '<li><hr class="dropdown-divider"></li> ' . $deleteBtn . '</li>';
+                    }
 
 
-                    return $divGroup.$viewBtn . $editBtn;
+
+                    return $divGroup.$viewBtn . $editBtn . $divGroupDropdownMenu.'</ul></div></div>';
                 })
                 ->editColumn('role', function ($user) {
 
