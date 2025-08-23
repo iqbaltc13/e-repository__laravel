@@ -55,10 +55,10 @@ class UserController extends Controller
                     $verifyBtn = '<button class="dropdown-item text-success" title="Verify Email" onclick="verifyEmail(' . $user->id . ')" title="Verify Email">
                                     <i class="fas fa-check me-1"></i>Verify Email
                                 </button>';
-                    $resetBtn = '<button class="dropdown-item text-warning" title="Reset Password" onclick="resetPassword(' . $user->id . ')" title="Reset Password">
+                    $resetBtn = '<button class="dropdown-item text-warning" user-fullname="'.$user->full_name.'" user-email="'.$user->email.'" title="Reset Password" onclick="resetPassword(' . $user->id . ')" title="Reset Password">
                                     <i class="fas fa-key me-1"></i>Reset Password
                                 </button>';
-                    $deleteBtn = '<button class="dropdown-item text-danger" title="Delete" onclick="deleteUser(' . $user->id . ')" title="Delete">
+                    $deleteBtn = '<button class="dropdown-item text-danger" user-fullname="'.$user->full_name.'" user-email="'.$user->email.'" title="Delete" onclick="deleteUser(' . $user->id . ')" title="Delete">
                                     <i class="fas fa-trash me-1"></i>Delete
                                 </button>';
                     $divGroupDropdownMenu = '<div class="btn-group" role="group">
@@ -188,14 +188,24 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User berhasil dibuat!');
     }
 
-    public function show(User $user)
+    public function show($id)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        }
         $user->load(['institution', 'faculty', 'prodi', 'journals']);
         return view('profile.show', compact('user'));
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        }
         $institutions = Institution::where('status', 'aktif')->get();
         $faculties = Faculty::where('status', 'aktif')->get();
         $departments = Department::all();
@@ -233,8 +243,13 @@ class UserController extends Controller
         return redirect()->route('users.show', $user)->with('success', 'User berhasil diupdate!');
     }
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        } 
         if ($user->journals()->count() > 0) {
             return redirect()->back()->with('error', 'User tidak dapat dihapus karena masih memiliki jurnal!');
         }
@@ -243,9 +258,14 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
     }
-    public function resetPassword(User $user)
+    public function resetPassword($id)
     {
-        $newPassword = 'password123';
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        }
+        $newPassword = env('NEW_PASSWORD_RESET');
         $user->update([
             'password' => Hash::make($newPassword)
         ]);
@@ -254,8 +274,13 @@ class UserController extends Controller
             ->with('success', "Password user {$user->full_name} berhasil direset ke: {$newPassword}");
     }
 
-    public function verifyEmail(User $user)
+    public function verifyEmail($id)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'User tidak ditemukan');
+        }
         if ($user->hasVerifiedEmail()) {
             return redirect()->route('admin.users.index')
                 ->with('info', 'Email sudah terverifikasi');
