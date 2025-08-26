@@ -30,13 +30,12 @@
             @csrf
 
         </form>
-        <form method="POST" action="" id="form-reset-password" class="d-inline"
-                                                  onsubmit="">
+        <form method="POST" action="" id="form-reset-password" class="d-inline">
             @csrf
-
+            
         </form>
-        <form method="POST" action="" class="d-inline" id="form-delete-user"
-                                                  onsubmit="">
+        <form method="POST" action="" class="d-inline" id="form-delete-user" onsubmit=""   >
+            
                                                 @csrf
                                                 @method('DELETE')
 
@@ -304,17 +303,23 @@ $(document).ready(function() {
 
 // User action functions
 function viewUser(id) {
+    let link = "{{route('admin.users.show', ':id')}}";
+	link = link.replace(':id', id);
     // Implement view user functionality
     console.log('View user:', id);
     // You can redirect to view page or open modal
     // window.location.href = '/users/' + id;
+    window.open(link, '_blank');
 }
 
 function editUser(id) {
+    let link = "{{route('admin.users.edit', ':id')}}";
+	link = link.replace(':id', id);
     // Implement edit user functionality
     console.log('Edit user:', id);
     // You can redirect to edit page or open modal
     // window.location.href = '/users/' + id + '/edit';
+    window.open(link, '_blank');
 }
 
 function addUser() {
@@ -322,6 +327,51 @@ function addUser() {
     console.log('Add new user');
     // You can redirect to create page or open modal
     // window.location.href = '/users/create';
+}
+function deleteUser(id) {
+    let link = "{{route('admin.users.destroy', ':id')}}";
+	link = link.replace(':id', id);
+    // Implement delete user functionality
+    console.log('Delete user:', id);
+    // You can show confirmation dialog or perform AJAX request
+    $("#form-delete-user").attr("action", link);
+    if(confirm("Are you sure you want to delete "+$(this).attr("user-fullname")+"?")){
+        $("#form-delete-user").submit();
+    }
+    else{
+        return false;
+    }
+}
+function resetPassword(id) {
+    let link = "{{route('admin.users.reset-password', ':id')}}";
+	link = link.replace(':id', id);
+    // Implement reset password functionality
+    
+    $("#form-reset-password").attr("action", link);
+    if(confirm("Reset password for "+$(this).attr("user-fullname")+"?")){
+        $("#form-reset-password").submit();
+    }
+    else{
+        return false;
+    }
+    
+
+    // You can show password reset modal or perform AJAX request
+}
+function verifyEmail(id) {
+    let link = "{{route('admin.users.verify-email', ':id')}}";
+	link = link.replace(':id', id);
+
+    // Implement verify email functionality
+    console.log('Verify email for user:', id);
+    $("#form-verify-email").attr("action", link);
+    if(confirm("Verify email for "+$(this).attr("user-fullname")+ " with email "+$(this).attr("user-email")+" "+"?")){
+        $("#form-verify-email").submit();
+    }
+    else{
+        return false;
+    }
+    // You can show verify email modal or perform AJAX request
 }
 </script>
 @endpush
