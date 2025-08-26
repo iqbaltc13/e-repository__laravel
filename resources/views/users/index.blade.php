@@ -32,10 +32,10 @@
         </form>
         <form method="POST" action="" id="form-reset-password" class="d-inline">
             @csrf
-            
+
         </form>
         <form method="POST" action="" class="d-inline" id="form-delete-user" onsubmit=""   >
-            
+
                                                 @csrf
                                                 @method('DELETE')
 
@@ -268,6 +268,8 @@ $(document).ready(function() {
         table.draw();
     });
 
+
+
     // Function to create column filters
     function createColumnFilters(table) {
         // Create filter row
@@ -300,7 +302,21 @@ $(document).ready(function() {
     }
 });
 
-
+$(document).delegate('.btn-show', 'click', function(e) {
+    viewUser($(this).attr("user_id"));
+});
+$(document).delegate('.btn-edit', 'click', function(e) {
+    editUser($(this).attr("user_id"));
+});
+$(document).delegate('.btn-verify', 'click', function(e) {
+    viewEmail($(this).attr("user_id"));
+});
+$(document).delegate('.btn-reset', 'click', function(e) {
+    resetPassword($(this).attr("user_id"));
+});
+$(document).delegate('.btn-delete', 'click', function(e) {
+    deleteUser($(this).attr("user_id"));
+});
 // User action functions
 function viewUser(id) {
     let link = "{{route('admin.users.show', ':id')}}";
@@ -346,7 +362,7 @@ function resetPassword(id) {
     let link = "{{route('admin.users.reset-password', ':id')}}";
 	link = link.replace(':id', id);
     // Implement reset password functionality
-    
+
     $("#form-reset-password").attr("action", link);
     if(confirm("Reset password for "+$(this).attr("user-fullname")+"?")){
         $("#form-reset-password").submit();
@@ -354,7 +370,7 @@ function resetPassword(id) {
     else{
         return false;
     }
-    
+
 
     // You can show password reset modal or perform AJAX request
 }
