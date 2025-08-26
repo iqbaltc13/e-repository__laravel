@@ -28,7 +28,8 @@ use PgSql\Lob;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return redirect()->route('journals.public');
 });
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
