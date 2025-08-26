@@ -45,20 +45,20 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->addColumn('actions', function ($user) {
                     $divGroup = "<div class='btn-group' role='group'>";
-                    $viewBtn = "<button class='btn btn-sm btn-show btn-outline-info' title='View' user_id='{$user->id}'  title='View'>
+                    $viewBtn = "<button class='btn btn-sm btn-show btn-outline-info' user-full_name='{$user->full_name}' user-email='{$user->email}' title='View' user_id='{$user->id}'  title='View'>
                                     <i class='fa fa-eye'></i>
                                 </button>";
 
-                    $editBtn = "<button class='btn btn-sm btn-edit btn-outline-warning' title='Edit' user_id='{$user->id}' title='Edit'>
+                    $editBtn = "<button class='btn btn-sm btn-edit btn-outline-warning' user-full_name='{$user->full_name}' title='Edit' user_id='{$user->id}' title='Edit'>
                                     <i class='fa fa-edit'></i>
                                 </button>";
-                    $verifyBtn = "<button class='dropdown-item text-success btn-verify' title='Verify Email' user_id='{$user->id}' title='Verify Email'>
+                    $verifyBtn = "<button class='dropdown-item text-success btn-verify' user-email='{$user->email}' user-full_name='{$user->full_name}' user-email='{$user->email}' title='Verify Email' user_id='{$user->id}' title='Verify Email'>
                                     <i class='fas fa-check me-1'></i>Verify Email
                                 </button>";
-                    $resetBtn = "<button class='dropdown-item text-warning btn-reset' title='Reset Password' user_id='{$user->id}' title='Reset Password'>
+                    $resetBtn = "<button class='dropdown-item text-warning btn-reset' user-full_name='{$user->full_name}' title='Reset Password' user_id='{$user->id}' title='Reset Password'>
                                     <i class='fas fa-key me-1'></i>Reset Password
                                 </button>";
-                    $deleteBtn = "<button class='dropdown-item text-danger btn-delete' title='Delete' user_id='{$user->id}' title='Delete'>
+                    $deleteBtn = "<button class='dropdown-item text-danger btn-delete' user-full_name='{$user->full_name}' title='Delete' user_id='{$user->id}' title='Delete'>
                                     <i class='fas fa-trash me-1'></i>Delete
                                 </button>";
                     $divGroupDropdownMenu = "<div class='btn-group' role='group'>
@@ -164,7 +164,7 @@ class UserController extends Controller
             'address' => 'nullable|string',
             'country' => 'nullable|string|max:100',
             'organization' => 'nullable|string|max:255',
-            'department' => 'nullable|string|max:255',
+            //'department' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
         ]);
 
@@ -181,7 +181,7 @@ class UserController extends Controller
             'address' => $request->address,
             'country' => $request->country,
             'organization' => $request->organization,
-            'department' => $request->department,
+            //'department' => $request->department,
             'bio' => $request->bio,
         ]);
 
@@ -228,7 +228,7 @@ class UserController extends Controller
             'address' => 'nullable|string',
             'country' => 'nullable|string|max:100',
             'organization' => 'nullable|string|max:255',
-            'department' => 'nullable|string|max:255',
+            //'department' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
         ]);
 
