@@ -44,40 +44,40 @@ class UserController extends Controller
             return DataTables::of($users)
                 ->addIndexColumn()
                 ->addColumn('actions', function ($user) {
-                    $divGroup = '<div class="btn-group" role="group">';
-                    $viewBtn = '<button class="btn btn-sm btn-outline-info" title="View" onclick="viewUser(' . $user->id . ')" title="View">
-                                    <i class="fa fa-eye"></i>
-                                </button>';
+                    $divGroup = "<div class='btn-group' role='group'>";
+                    $viewBtn = "<button class='btn btn-sm btn-show btn-outline-info' user-full_name='{$user->full_name}' user-email='{$user->email}' title='View' user_id='{$user->id}'  title='View'>
+                                    <i class='fa fa-eye'></i>
+                                </button>";
 
-                    $editBtn = '<button class="btn btn-sm btn-outline-warning" title="Edit" onclick="editUser(' . $user->id . ')" title="Edit">
-                                    <i class="fa fa-edit"></i>
-                                </button>';
-                    $verifyBtn = '<button class="dropdown-item text-success" title="Verify Email" onclick="verifyEmail(' . $user->id . ')" title="Verify Email">
-                                    <i class="fas fa-check me-1"></i>Verify Email
-                                </button>';
-                    $resetBtn = '<button class="dropdown-item text-warning" user-fullname="'.$user->full_name.'" user-email="'.$user->email.'" title="Reset Password" onclick="resetPassword(' . $user->id . ')" title="Reset Password">
-                                    <i class="fas fa-key me-1"></i>Reset Password
-                                </button>';
-                    $deleteBtn = '<button class="dropdown-item text-danger" user-fullname="'.$user->full_name.'" user-email="'.$user->email.'" title="Delete" onclick="deleteUser(' . $user->id . ')" title="Delete">
-                                    <i class="fas fa-trash me-1"></i>Delete
-                                </button>';
-                    $divGroupDropdownMenu = '<div class="btn-group" role="group">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                                    <i class="fas fa-cog"></i>
+                    $editBtn = "<button class='btn btn-sm btn-edit btn-outline-warning' user-full_name='{$user->full_name}' title='Edit' user_id='{$user->id}' title='Edit'>
+                                    <i class='fa fa-edit'></i>
+                                </button>";
+                    $verifyBtn = "<button class='dropdown-item text-success btn-verify' user-email='{$user->email}' user-full_name='{$user->full_name}' user-email='{$user->email}' title='Verify Email' user_id='{$user->id}' title='Verify Email'>
+                                    <i class='fas fa-check me-1'></i>Verify Email
+                                </button>";
+                    $resetBtn = "<button class='dropdown-item text-warning btn-reset' user-full_name='{$user->full_name}' title='Reset Password' user_id='{$user->id}' title='Reset Password'>
+                                    <i class='fas fa-key me-1'></i>Reset Password
+                                </button>";
+                    $deleteBtn = "<button class='dropdown-item text-danger btn-delete' user-full_name='{$user->full_name}' title='Delete' user_id='{$user->id}' title='Delete'>
+                                    <i class='fas fa-trash me-1'></i>Delete
+                                </button>";
+                    $divGroupDropdownMenu = "<div class='btn-group' role='group'>
+                                                <button type='button' class='btn btn-sm btn-outline-secondary dropdown-toggle' data-bs-toggle='dropdown'>
+                                                    <i class='fas fa-cog'></i>
                                                 </button>
-                                                <ul class="dropdown-menu">';
+                                                <ul class='dropdown-menu'>";
 
                     if((!$user->email_verified_at)){
-                        $divGroupDropdownMenu .= '<li> ' . $verifyBtn . '</li>';
+                        $divGroupDropdownMenu .= "<li> " . $verifyBtn . "</li>";
                     }
-                    $divGroupDropdownMenu .= '<li> ' . $resetBtn . '</li>';
+                    $divGroupDropdownMenu .= "<li> " . $resetBtn . "</li>";
                     if($user->id !== Auth::id()){
-                        $divGroupDropdownMenu .= '<li><hr class="dropdown-divider"></li> ' . $deleteBtn . '</li>';
+                        $divGroupDropdownMenu .= "<li><hr class='dropdown-divider'></li> " . $deleteBtn . '</li>';
                     }
 
 
 
-                    return $divGroup.$viewBtn . $editBtn . $divGroupDropdownMenu.'</ul></div></div>';
+                    return $divGroup.$viewBtn . $editBtn . $divGroupDropdownMenu."</ul></div></div>";
                 })
                 ->editColumn('role', function ($user) {
 
@@ -157,14 +157,14 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,member,editor',
-            'institution_code' => 'required|exists:institutions,institution_code',
-            'faculty_code' => 'required|exists:faculties,faculty_code',
-            'department_code' => 'required|exists:departments,department_code',
+            'institution_code' => 'nullable|exists:institutions,institution_code',
+            'faculty_code' => 'nullable|exists:faculties,faculty_code',
+            'department_code' => 'nullable|exists:departments,department_code',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'country' => 'nullable|string|max:100',
             'organization' => 'nullable|string|max:255',
-            'department' => 'nullable|string|max:255',
+            //'department' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
         ]);
 
@@ -181,11 +181,11 @@ class UserController extends Controller
             'address' => $request->address,
             'country' => $request->country,
             'organization' => $request->organization,
-            'department' => $request->department,
+            //'department' => $request->department,
             'bio' => $request->bio,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dibuat!');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dibuat!');
     }
 
     public function show($id)
@@ -196,7 +196,7 @@ class UserController extends Controller
                 ->with('error', 'User tidak ditemukan');
         }
         $user->load(['institution', 'faculty', 'prodi', 'journals']);
-        return view('profile.show', compact('user'));
+        return view('users.show', compact('user'));
     }
 
     public function edit($id)
@@ -216,7 +216,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'full_name' => 'required|string|max:255|unique:users,fullname,' . $user->id,
+            'full_name' => 'required|string|max:255|unique:users,full_name,' . $user->id,
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
@@ -228,7 +228,7 @@ class UserController extends Controller
             'address' => 'nullable|string',
             'country' => 'nullable|string|max:100',
             'organization' => 'nullable|string|max:255',
-            'department' => 'nullable|string|max:255',
+            //'department' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
         ]);
 
@@ -237,10 +237,14 @@ class UserController extends Controller
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
+        if ($request->filled('email')) {
+            $data['email_verified_at'] = null;
+            $user->markEmailAsVerified();
+        }
 
         $user->update($data);
 
-        return redirect()->route('users.show', $user)->with('success', 'User berhasil diupdate!');
+        return redirect()->route('admin.users.show', $user)->with('success', 'User berhasil diupdate!');
     }
 
     public function destroy($id)
@@ -249,14 +253,14 @@ class UserController extends Controller
         if (!$user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'User tidak ditemukan');
-        } 
+        }
         if ($user->journals()->count() > 0) {
             return redirect()->back()->with('error', 'User tidak dapat dihapus karena masih memiliki jurnal!');
         }
 
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus!');
     }
     public function resetPassword($id)
     {
