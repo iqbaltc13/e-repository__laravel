@@ -31,7 +31,7 @@ class JournalAuthorController extends Controller
 
     public function store(Request $request, Journal $journal)
     {
-        $this->authorize('update', $journal);
+        //$this->authorize('update', $journal);
 
         $request->validate([
             'first_name' => 'required|string|max:255',
