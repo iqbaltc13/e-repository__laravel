@@ -16,7 +16,7 @@ class JournalAuthorController extends Controller
 
     public function index(Journal $journal)
     {
-        $this->authorize('view', $journal);
+        //$this->authorize('view', $journal);
 
         $authors = $journal->journalAuthors()->orderBy('order')->get();
         return view('journal-authors.index', compact('journal', 'authors'));
