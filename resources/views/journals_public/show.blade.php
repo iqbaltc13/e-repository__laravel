@@ -129,7 +129,7 @@
                         <table class="table table-sm table-borderless">
                             <tr>
                                 <td><strong>Author Utama:</strong></td>
-                                <td>{{ $journal->author->fullname }}</td>
+                                <td>@if($journal->coAuthors->count() > 0){{ $journal->coAuthors[0]->first_name }} {{ $journal->coAuthors[0]->last_name }}@endif</td>
                             </tr>
                             <tr>
                                 <td><strong>Kategori:</strong></td>
