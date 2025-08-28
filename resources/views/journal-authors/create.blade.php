@@ -58,7 +58,7 @@
                             <div class="mb-3">
                                 <label for="order" class="form-label">Urutan Author <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control @error('order') is-invalid @enderror"
-                                       id="order" name="order" value="{{ old('order', $journal->journalAuthors()->count() + 1) }}"
+                                       id="order" name="order" value="{{ old('order', $journal->coAuthors()->count() + 1) }}"
                                        min="1" required>
                                 @error('order')
                                     <div class="invalid-feedback">{{ $message }}</div>
