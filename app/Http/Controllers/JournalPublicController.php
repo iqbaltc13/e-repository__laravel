@@ -21,15 +21,16 @@ class JournalPublicController extends Controller
 
     public function index(Request $request)
     {
-        $query = Journal::with(['author', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
+        $query = Journal::with(['author','coAuthors', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
 
 
 
         // Filter berdasarkan parameter
+        $status = 'published';
         if ($request->status) {
-            $query->where('status', $request->status);
+            $status = $request->status;
         }
-
+        $query->where('status', $status);
         if ($request->category) {
             $query->where('category_id', $request->category);
         }
@@ -64,7 +65,7 @@ class JournalPublicController extends Controller
         // Most viewed journals
         $popularJournals = Journal::with(['author', 'category'])
             ->whereNotNull('journal_name')
-            ->whereIn('status', [ 'submitted',  'published'])
+            ->whereIn('status', [ 'published'])
             ->orderBy('views_count', 'desc')
             ->limit(5)
             ->get();

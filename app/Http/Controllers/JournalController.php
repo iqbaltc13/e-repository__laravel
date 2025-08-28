@@ -23,10 +23,10 @@ class JournalController extends Controller
 
     public function index(Request $request)
     {
-        $query = Journal::with(['author', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
+        $query = Journal::with(['author','coAuthors', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
 
         // Filter berdasarkan role
-        if (Auth::user()->isEditor()) {
+        if (Auth::user()->isEditor() || Auth::user()->isAdmin()) {
             $query->where('author_id', Auth::id());
         }
 

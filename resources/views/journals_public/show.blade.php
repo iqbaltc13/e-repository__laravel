@@ -40,6 +40,37 @@
                         <p class="text-justify">{{ Str::replace(["\r", "\n"], '<br>', $journal->abstract) }}</p>
                     </div>
                 </div>
+                @if($journal->coAuthors->count() > 0)
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">Sitasi</h6>
+                        <button id="copyCitationBtn"
+                                class="btn btn-sm btn-outline-primary copy-btn"
+                                type="button"
+                                data-toggle="tooltip"
+                                data-placement="left"
+                                title="Salin ke clipboard"
+                                aria-label="Salin sitasi ke clipboard">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p id="apaCitation" class="text-justify">{{ $journal->coAuthors[0]->last_name . ' , ' .$journal->coAuthors[0]->first_name }}
+                            @if ($journal->coAuthors->count() > 1) ,&amp;
+                                {{$journal->coAuthors[1]->last_name . ' , '.$journal->coAuthors[1]->first_name}}.
+                            @else
+                                .
+                            @endif
+                            &nbsp; ({{$journal->publication_date->format('Y') }}). {{$journal->journal_name}}. <i>IAIN Kediri</i>
+                            @if($journal->volume),{{$journal->volume}}@endif @if($journal->issue)({{$journal->issue}})@endif
+                            @if($journal->pages_start && $journal->page_end){{$journal->pages_start}}-{{$journal->page_end}}@endif
+                            @if($journal->doi).{{$journal->doi}}@endif
+
+
+                        </p>
+                    </div>
+                </div>
+                @endif
 
                 <!-- Keywords -->
                 <div class="card mb-4">
@@ -201,6 +232,55 @@
         </div>
     </div>
 </div>
+@push('scripts')
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+  // Util: salin teks ke clipboard (pakai navigator.clipboard, fallback ke execCommand)
+  function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    } else {
+      // Fallback
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.top = '-1000px';
+      textarea.style.left = '-1000px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      try { document.execCommand('copy'); }
+      finally { document.body.removeChild(textarea); }
+      return Promise.resolve();
+    }
+  }
+
+  // Handler tombol copy
+  (function () {
+    var btn = document.getElementById('copyCitationBtn');
+    var citationEl = document.getElementById('apaCitation');
+
+    btn.addEventListener('click', function () {
+      var text = citationEl.innerText.trim();
+      copyTextToClipboard(text).then(function () {
+        // Umpan balik tooltip
+        $(btn).tooltip('hide')
+              .attr('data-original-title', 'Tersalin!')
+              .tooltip('show');
+
+        // Kembalikan tooltip ke teks semula setelah 1.5 detik
+        setTimeout(function () {
+          $(btn).tooltip('hide')
+                .attr('data-original-title', 'Salin ke clipboard');
+        }, 1500);
+      });
+    });
+  })();
+</script>
+@endpush
 
 
 @endsection

@@ -22,12 +22,9 @@
                 <div class="col-md-3">
                     <select name="status" class="form-select">
                         <option value="">Semua Status</option>
-                        <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
                         <option value="submitted" {{ request('status') === 'submitted' ? 'selected' : '' }}>Submitted</option>
-                        <option value="under_review" {{ request('status') === 'under_review' ? 'selected' : '' }}>Under Review</option>
-                        <option value="accepted" {{ request('status') === 'accepted' ? 'selected' : '' }}>Accepted</option>
                         <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
-                        <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
+
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -72,8 +69,8 @@
                     </p>
                     <div class="mb-2">
                         <small class="text-muted">
-                            <i class="fas fa-user"></i> {{ $journal->author ? $journal->author->fullname : '' }}<br>
-                            <i class="fas fa-building"></i> {{ $journal->faculty->faculty_name }}<br>
+                            <i class="fas fa-user"></i> {{ $journal->coAuthors->count() > 0 ?  $journal->coAuthors[0]->last_name . ' , ' .$journal->coAuthors[0]->first_name : '' }}<br>
+                            <i class="fas fa-building"></i> {{ $journal->faculty ? $journal->faculty->faculty_name : ''}}<br>
                             @if($journal->category)
                                 <i class="fas fa-tag"></i> {{ $journal->category->name }}
                             @endif
