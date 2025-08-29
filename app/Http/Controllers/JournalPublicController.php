@@ -124,7 +124,7 @@ class JournalPublicController extends Controller
         // Most viewed journals
         $popularJournals = Journal::with(['author', 'category'])
             ->whereNotNull('journal_name')
-            ->whereIn('status', [ 'submitted',  'published'])
+            ->whereIn('status', [  'published'])
             ->orderBy('views_count', 'desc')
             ->limit(5)
             ->get();
