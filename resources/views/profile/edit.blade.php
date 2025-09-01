@@ -92,7 +92,9 @@
                                 <label for="institution_code" class="form-label">Universitas <span class="text-danger">*</span></label>
                                 <select class="form-select @error('institution_code') is-invalid @enderror"
                                         id="institution_code" name="institution_code" required>
-
+                                        @if($user->institution)
+                                            <option value="{{ $user->institution_code }}" selected>{{ $user->institution->institution_name }}</option>
+                                        @endif
 
                                 </select>
                                 @error('institution_code')
@@ -105,7 +107,9 @@
                                 <label for="faculty_code" class="form-label">Fakultas <span class="text-danger">*</span></label>
                                 <select class="form-select @error('faculty_code') is-invalid @enderror"
                                         id="faculty_code" name="faculty_code" >
-
+                                        @if($user->faculty)
+                                            <option value="{{ $user->faculty_code }}" selected>{{ $user->faculty->faculty_name }}</option>
+                                        @endif
                                 </select>
                                 @error('faculty_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -116,7 +120,9 @@
                                 <label for="department_code" class="form-label">Departemen/Prodi <span class="text-danger">*</span></label>
                                 <select class="form-select @error('department_code') is-invalid @enderror"
                                         id="department_code" name="department_code" >
-
+                                        @if($user->prodi)
+                                            <option value="{{ $user->department_code }}" selected>{{ $user->prodi->department_name }}</option>
+                                        @endif
                                 </select>
                                 @error('department_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
