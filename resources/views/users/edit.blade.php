@@ -90,7 +90,7 @@
                             <h5 class="mb-3 text-success"><i class="fas fa-building me-2"></i>Institusi & Organisasi</h5>
 
                             <div class="mb-3">
-                                <label for="organization" class="form-label">Organisasi/label>
+                                <label for="organization" class="form-label">Organisasi </label>
                                 <input id="organization" type="text" class="form-control @error('organization') is-invalid @enderror"
                                        name="organization" value="{{ old('organization', $user->organization) }}" placeholder="nama organisasi">
                                 @error('organization')
