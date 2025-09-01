@@ -99,13 +99,7 @@
                                 <label for="department_code" class="form-label">Departemen/Prodi <span class="text-danger">*</span></label>
                                 <select class="form-select @error('department_code') is-invalid @enderror"
                                         id="department_code" name="department_code" >
-                                    <option value="">Pilih Departemen/Prodi</option>
-                                    @foreach($departments as $department)
-                                        <option value="{{ $department->department_code }}"
-                                                {{ old('department_code') == $department->department_code ? 'selected' : '' }}>
-                                            {{ $department->name }}
-                                        </option>
-                                    @endforeach
+
                                 </select>
                                 @error('department_code')
                                     <div class="invalid-feedback">{{ $message }}</div>

@@ -822,6 +822,7 @@ $(document).delegate('.btn-create-keyword', 'click', function() {
         });
 
         loadUniversitas();
+
         @if($journal->institution_code)
             $('#institution_code').val("{{$journal->institution_code}}");
 
