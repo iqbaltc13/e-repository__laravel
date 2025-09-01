@@ -66,7 +66,7 @@
                     <div class="mb-2">
                         <small class="text-muted">
                             <i class="fas fa-user"></i> {{ $journal->coAuthors->count() > 0 ?  $journal->coAuthors[0]->last_name . ' , ' .$journal->coAuthors[0]->first_name : '' }}<br>
-                            <i class="fas fa-building"></i> {{ $journal->faculty->faculty_name }}<br>
+                            <i class="fas fa-building"></i> {{$journal->faculty?  $journal->faculty->faculty_name : '' }}<br>
                             @if($journal->category)
                                 <i class="fas fa-tag"></i> {{ $journal->category->name }}
                             @endif

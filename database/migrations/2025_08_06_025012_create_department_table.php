@@ -19,8 +19,8 @@ return new class extends Migration
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
             $table->string('id',255)->primary();
-            $table->string('department_code', 10)->unique();
-            $table->string('department_name');
+            $table->string('department_code', 255)->unique();
+            $table->string('department_name',255);
             $table->string('faculty_code',255)->nullable();
             $table->string('institution_code',255)->nullable();
             $table->enum('jenjang', ['D3', 'D4', 'S1', 'S2', 'S3']);
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('head_name', 100)->nullable();
             $table->integer('kapasitas_mahasiswa')->default(0);
             $table->string('email', 100)->nullable();
-            $table->string('telepon', 20)->nullable();
+            $table->string('telepon', 255)->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();

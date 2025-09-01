@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JournalPublicController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\MasterController;
 
 use PgSql\Lob;
 
@@ -124,7 +125,12 @@ Route::get('/journals-public', [JournalPublicController::class, 'index'])->name(
 Route::get('/journals-public/{journal}', [JournalPublicController::class, 'show'])->name('journals.public.show');
 Route::get('/journals-public/{journal}/download', [JournalPublicController::class, 'download'])->name('journals.public.download');
 
+Route::prefix('master')->group(function () {
+    Route::get('get-universitas', [MasterController::class, 'getUniversitas'])->name('get-universitas');
+    Route::get('get-fakultas', [MasterController::class, 'getFakultas'])->name('get-fakultas');
+    Route::get('get-prodi', [MasterController::class, 'getProdi'])->name('get-prodi');
 
+});
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
