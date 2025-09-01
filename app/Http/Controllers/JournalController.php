@@ -26,7 +26,7 @@ class JournalController extends Controller
         $query = Journal::with(['author','coAuthors', 'category', 'universitas', 'faculty', 'department'])->whereNotNull('journal_name');
 
         // Filter berdasarkan role
-        if (Auth::user()->isEditor() || Auth::user()->isAdmin()) {
+        if (Auth::user()->isEditor() ) {
             $query->where('author_id', Auth::id());
         }
 
@@ -124,6 +124,9 @@ class JournalController extends Controller
             'abstract' => 'required|string',
             'keywords' => 'required|string',
             'category_id' => 'nullable|exists:journal_categories,id',
+            'institution_code' => 'required|exists:institutions,institution_code',
+            'faculty_code' => 'nullable|exists:faculties,faculty_code',
+            'department_code' => 'nullable|exists:departments,department_code',
             'pdf_file' => 'nullable|string',
             'other_document_file' => 'nullable|string',
             'language' => 'required|in:id,en,es,fr,de,ja,ko,pt,ru,zh',

@@ -112,6 +112,8 @@
         </div>
     @endforelse
 </div>
+<!-- Pagination -->
+
 @push('scripts')
 <script>
 

@@ -78,13 +78,7 @@
                                 <label for="institution_code" class="form-label">Universitas <span class="text-danger">*</span></label>
                                 <select class="form-select @error('institution_code') is-invalid @enderror"
                                         id="institution_code" name="institution_code" required>
-                                    <option value="">Pilih Universitas</option>
-                                    @foreach($institutions as $institution)
-                                        <option value="{{ $institution->institution_code }}"
-                                                {{ old('institution_code', $journal->institution_code) == $institution->institution_code ? 'selected' : '' }}>
-                                            {{ $institution->institution_name }}
-                                        </option>
-                                    @endforeach
+
                                 </select>
                                 @error('institution_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -96,13 +90,7 @@
                                 <label for="faculty_code" class="form-label">Fakultas <span class="text-danger">*</span></label>
                                 <select class="form-select @error('faculty_code') is-invalid @enderror"
                                         id="faculty_code" name="faculty_code" >
-                                    <option value="">Pilih Fakultas</option>
-                                    @foreach($faculties as $faculty)
-                                        <option value="{{ $faculty->faculty_code }}"
-                                                {{ old('faculty_code', $journal->faculty_code) == $faculty->faculty_code ? 'selected' : '' }}>
-                                            {{ $faculty->faculty_name }}
-                                        </option>
-                                    @endforeach
+
                                 </select>
                                 @error('faculty_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -114,13 +102,7 @@
                                 <label for="department_code" class="form-label">Departemen/Prodi <span class="text-danger">*</span></label>
                                 <select class="form-select @error('department_code') is-invalid @enderror"
                                         id="department_code" name="department_code" >
-                                    <option value="">Pilih Departemen/Prodi</option>
-                                    @foreach($departments as $department)
-                                        <option value="{{ $department->department_code }}"
-                                                {{ old('department_code', $journal->department_code) == $department->department_code ? 'selected' : '' }}>
-                                            {{ $department->name }}
-                                        </option>
-                                    @endforeach
+
                                 </select>
                                 @error('department_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -709,6 +691,157 @@ $(document).delegate('.btn-create-keyword', 'click', function() {
     const result = extractKeywordsFromAbstract(abstractText);
     $('#keywords').val(result.keywords.map(kw => kw.keyword).join(', '));
 });
+</script>
+<script>
+   $(document).ready(function() {
+            // Inisialisasi Select2 dengan tema Bootstrap
+            function initializeSelect2(selector, placeholder) {
+                $(selector).select2({
+                    theme: 'bootstrap',
+                    placeholder: placeholder,
+                    allowClear: true,
+                    language: 'id',
+                    escapeMarkup: function(markup) {
+                        return markup;
+                    }
+                });
+            }
+
+            // Inisialisasi semua select2
+            initializeSelect2('#institution_code', 'Pilih Universitas...');
+            initializeSelect2('#faculty_code', 'Pilih Fakultas...');
+            initializeSelect2('#department_code', 'Pilih Program Studi...');
+
+            // Fungsi untuk menampilkan loading
+            function showLoading(selector) {
+                $(selector).prop('disabled', true);
+                $(selector).html('<option value="">Memuat...</option>');
+            }
+
+            // Fungsi untuk reset select
+            function resetSelect(selector, placeholder) {
+                $(selector).prop('disabled', true);
+                $(selector).html(`<option value="">${placeholder}</option>`);
+                $(selector).val('').trigger('change');
+            }
+
+            async function loadUniversitas() {
+            try {
+                showLoading('#institution_code');
+
+                const response = await $.ajax({
+                    url: "{{ route('get-universitas') }}", // Endpoint API Anda
+                    method: 'GET',
+                    dataType: 'json'
+                });
+
+                let options = '<option value="">-- Pilih Universitas --</option>';
+                response.data.forEach(univ => {
+                    options += `<option value="${univ.institution_code}">${univ.institution_name}</option>`;
+                });
+
+                $('#institution_code').html(options).prop('disabled', false);
+
+            } catch (error) {
+                console.error('Error loading universitas:', error);
+                $('#institution_code').html('<option value="">Error memuat data</option>');
+            }
+        }
+
+        async function loadFakultas(universitasCode) {
+            if (!universitasCode) {
+                resetSelect('#faculty_code', '-- Pilih Fakultas --');
+                resetSelect('#department_code', '-- Pilih Program Studi --');
+                return;
+            }
+
+            try {
+                showLoading('#faculty_code');
+                resetSelect('#department_code', '-- Pilih Program Studi --');
+
+                const response = await $.ajax({
+                    url: "{{ route('get-fakultas') }}",
+                    method: 'GET',
+                    data: { institution_code: universitasCode },
+                    dataType: 'json'
+                });
+
+                let options = '<option value="">-- Pilih Fakultas --</option>';
+                response.data.forEach(fakultas => {
+                    options += `<option value="${fakultas.faculty_code}">${fakultas.faculty_name}</option>`;
+                });
+
+                $('#faculty_code').html(options).prop('disabled', false);
+
+            } catch (error) {
+                console.error('Error loading fakultas:', error);
+                $('#faculty_code').html('<option value="">Error memuat data</option>');
+            }
+        }
+
+        async function loadProdi(universitasCode, fakultasCode) {
+            if (!universitasCode || !fakultasCode) {
+                resetSelect('#department_code', '-- Pilih Program Studi --');
+                return;
+            }
+
+            try {
+                showLoading('#department_code');
+
+                const response = await $.ajax({
+                    url: "{{ route('get-prodi') }}",
+                    method: 'GET',
+                    data: {
+                        institution_code: universitasCode,
+                        faculty_code: fakultasCode
+                    },
+                    dataType: 'json'
+                });
+
+                let options = '<option value="">-- Pilih Program Studi --</option>';
+                response.data.forEach(prodi => {
+                    options += `<option value="${prodi.department_code}">${prodi.department_name}</option>`;
+                });
+
+                $('#department_code').html(options).prop('disabled', false);
+
+            } catch (error) {
+                console.error('Error loading prodi:', error);
+                $('#department_code').html('<option value="">Error memuat data</option>');
+            }
+        }
+         $('#institution_code').on('change', function() {
+                const universitasCode = $(this).val();
+                loadFakultas(universitasCode);
+        });
+
+        $('#faculty_code').on('change', function() {
+            const universitasCode = $('#institution_code').val();
+            const fakultasCode = $(this).val();
+            loadProdi(universitasCode, fakultasCode);
+        });
+
+        loadUniversitas();
+        @if($journal->institution_code)
+            $('#institution_code').val("{{$journal->institution_code}}");
+
+            // Load fakultas berdasarkan universitas
+            loadFakultas("{{$journal->institution_code}}");
+
+            // Set fakultas yang dipilih
+            @if($journal->faculty_code)
+                $('#faculty_code').val("{{$journal->faculty_code}}");
+                loadProdi("{{$journal->institution_code}}", "{{$journal->faculty_code}}");
+
+                // Set prodi yang dipilih
+                @if ($journal->department_code)
+                    $('#department_code').val("{{$journal->department_code}}");
+                @endif
+
+
+            @endif
+        @endif
+    });
 </script>
 @endpush
 @endsection

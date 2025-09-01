@@ -176,7 +176,7 @@
                             <tr>
                                 <td><strong>Departemen/Prodi:</strong></td>
                                 @if(!is_null($journal->department))
-                                <td>{{ $journal->department->name }}</td>
+                                <td>{{ $journal->department->department_name }}</td>
                                 @endif
                             </tr>
                             @if($journal->doi)
