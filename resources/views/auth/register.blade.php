@@ -86,7 +86,7 @@
                             <h5 class="mb-3 text-success"><i class="fas fa-building me-2"></i>Institusi & Organisasi</h5>
 
                             <div class="mb-3">
-                                <label for="organization" class="form-label">Organisasi/Kampus/Institusi</label>
+                                <label for="organization" class="form-label">Organisasi</label>
                                 <input id="organization" type="text" class="form-control @error('organization') is-invalid @enderror"
                                        name="organization" value="{{ old('organization') }}" placeholder="Nama organisasi tempat bekerja">
                                 @error('organization')
@@ -94,42 +94,43 @@
                                 @enderror
                             </div>
 
-                            {{-- <div class="mb-3">
-                                <label for="departemen" class="form-label">Departemen/Divisi</label>
-                                <input id="departemen" type="text" class="form-control @error('departemen') is-invalid @enderror"
-                                       name="departemen" value="{{ old('departemen') }}" placeholder="Departemen atau divisi">
-                                @error('departemen')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            <h6 class="mb-3 mt-4">Informasi Institusi</h6>
+
 
                             <div class="mb-3">
-                                <label for="institution_code" class="form-label">Kode Institusi</label>
-                                <input id="institution_code" type="text" class="form-control @error('institution_code') is-invalid @enderror"
-                                       name="institution_code" value="{{ old('institution_code') }}" placeholder="INST001">
+                                <label for="institution_code" class="form-label">Universitas <span class="text-danger">*</span></label>
+                                <select class="form-select @error('institution_code') is-invalid @enderror"
+                                        id="institution_code" name="institution_code" required>
+
+
+                                </select>
                                 @error('institution_code')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
+
                             <div class="mb-3">
-                                <label for="faculty_code" class="form-label">Kode Fakultas</label>
-                                <input id="faculty_code" type="text" class="form-control @error('faculty_code') is-invalid @enderror"
-                                       name="faculty_code" value="{{ old('faculty_code') }}" placeholder="FTECH">
+                                <label for="faculty_code" class="form-label">Fakultas <span class="text-danger">*</span></label>
+                                <select class="form-select @error('faculty_code') is-invalid @enderror"
+                                        id="faculty_code" name="faculty_code" >
+
+                                </select>
                                 @error('faculty_code')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="mb-3">
-                                <label for="department_code" class="form-label">Kode Departemen</label>
-                                <input id="department_code" type="text" class="form-control @error('department_code') is-invalid @enderror"
-                                       name="department_code" value="{{ old('department_code') }}" placeholder="DCOMP">
-                                @error('department_code')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div> --}}
+                                <label for="department_code" class="form-label">Departemen/Prodi <span class="text-danger">*</span></label>
+                                <select class="form-select @error('department_code') is-invalid @enderror"
+                                        id="department_code" name="department_code" >
 
+                                </select>
+                                @error('department_code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="mb-3">
                                 <label for="address" class="form-label">Alamat</label>
                                 <textarea id="address" class="form-control @error('address') is-invalid @enderror"
@@ -222,6 +223,140 @@ document.getElementById('password').addEventListener('input', function() {
 
     // You can add visual feedback here
 });
+</script>
+<script>
+   $(document).ready(function() {
+            // Inisialisasi Select2 dengan tema Bootstrap
+            function initializeSelect2(selector, placeholder) {
+                $(selector).select2({
+                    theme: 'bootstrap',
+                    placeholder: placeholder,
+                    allowClear: true,
+                    language: 'id',
+                    escapeMarkup: function(markup) {
+                        return markup;
+                    }
+                });
+            }
+
+            // Inisialisasi semua select2
+            initializeSelect2('#institution_code', 'Pilih Universitas...');
+            initializeSelect2('#faculty_code', 'Pilih Fakultas...');
+            initializeSelect2('#department_code', 'Pilih Program Studi...');
+
+            // Fungsi untuk menampilkan loading
+            function showLoading(selector) {
+                $(selector).prop('disabled', true);
+                $(selector).html('<option value="">Memuat...</option>');
+            }
+
+            // Fungsi untuk reset select
+            function resetSelect(selector, placeholder) {
+                $(selector).prop('disabled', true);
+                $(selector).html(`<option value="">${placeholder}</option>`);
+                $(selector).val('').trigger('change');
+            }
+
+            async function loadUniversitas() {
+            try {
+                showLoading('#institution_code');
+
+                const response = await $.ajax({
+                    url: "{{ route('get-universitas') }}", // Endpoint API Anda
+                    method: 'GET',
+                    dataType: 'json'
+                });
+
+                let options = '<option value="">-- Pilih Universitas --</option>';
+                response.data.forEach(univ => {
+                    options += `<option value="${univ.institution_code}">${univ.institution_name}</option>`;
+                });
+
+                $('#institution_code').html(options).prop('disabled', false);
+
+            } catch (error) {
+                console.error('Error loading universitas:', error);
+                $('#institution_code').html('<option value="">Error memuat data</option>');
+            }
+        }
+
+        async function loadFakultas(universitasCode) {
+            if (!universitasCode) {
+                resetSelect('#faculty_code', '-- Pilih Fakultas --');
+                resetSelect('#department_code', '-- Pilih Program Studi --');
+                return;
+            }
+
+            try {
+                showLoading('#faculty_code');
+                resetSelect('#department_code', '-- Pilih Program Studi --');
+
+                const response = await $.ajax({
+                    url: "{{ route('get-fakultas') }}",
+                    method: 'GET',
+                    data: { institution_code: universitasCode },
+                    dataType: 'json'
+                });
+
+                let options = '<option value="">-- Pilih Fakultas --</option>';
+                response.data.forEach(fakultas => {
+                    options += `<option value="${fakultas.faculty_code}">${fakultas.faculty_name}</option>`;
+                });
+
+                $('#faculty_code').html(options).prop('disabled', false);
+
+            } catch (error) {
+                console.error('Error loading fakultas:', error);
+                $('#faculty_code').html('<option value="">Error memuat data</option>');
+            }
+        }
+
+        async function loadProdi(universitasCode, fakultasCode) {
+            if (!universitasCode || !fakultasCode) {
+                resetSelect('#department_code', '-- Pilih Program Studi --');
+                return;
+            }
+
+            try {
+                showLoading('#department_code');
+
+                const response = await $.ajax({
+                    url: "{{ route('get-prodi') }}",
+                    method: 'GET',
+                    data: {
+                        institution_code: universitasCode,
+                        faculty_code: fakultasCode
+                    },
+                    dataType: 'json'
+                });
+
+                let options = '<option value="">-- Pilih Program Studi --</option>';
+                response.data.forEach(prodi => {
+                    options += `<option value="${prodi.department_code}">${prodi.department_name}</option>`;
+                });
+
+                $('#department_code').html(options).prop('disabled', false);
+
+            } catch (error) {
+                console.error('Error loading prodi:', error);
+                $('#department_code').html('<option value="">Error memuat data</option>');
+            }
+        }
+         $('#institution_code').on('change', function() {
+                const universitasCode = $(this).val();
+                loadFakultas(universitasCode);
+        });
+
+        $('#faculty_code').on('change', function() {
+            const universitasCode = $('#institution_code').val();
+            const fakultasCode = $(this).val();
+            loadProdi(universitasCode, fakultasCode);
+        });
+
+        loadUniversitas();
+
+
+    });
 </script>
 @endpush
 @endsection
