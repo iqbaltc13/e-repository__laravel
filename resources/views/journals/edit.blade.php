@@ -79,7 +79,7 @@
                                 <select class="form-select @error('institution_code') is-invalid @enderror"
                                         id="institution_code" name="institution_code" required>
                                         @if($journal->institution)
-                                            <option value="{{ $journal->institution_code }}" selected>{{ $journal->institution->institution_name }}</option>
+                                            <option value="{{ $journal->institution_code }}" selected>{{ $journal->universitas->institution_name }}</option>
                                         @endif
                                 </select>
                                 @error('institution_code')
