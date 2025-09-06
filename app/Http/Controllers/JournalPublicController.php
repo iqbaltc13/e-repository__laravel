@@ -42,6 +42,7 @@ class JournalPublicController extends Controller
                   ->orWhere('keywords', 'LIKE', "%{$request->search}%");
             });
         }
+        $query->orderBy('created_at', 'desc');
 
         $journals = $query->paginate(10);
         $categories = JournalCategory::all();
