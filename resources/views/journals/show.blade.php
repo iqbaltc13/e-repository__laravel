@@ -77,7 +77,7 @@
                             @else
                                 .
                             @endif
-                            &nbsp; ({{$journal->publication_date->format('Y') }}). {{$journal->journal_name}}. <i>IAIN Kediri</i>
+                            &nbsp; ({{$journal->publication_date ? $journal->publication_date->format('Y') : '' }}). {{$journal->journal_name}}. <i>IAIN Kediri</i>
                             @if($journal->volume),{{$journal->volume}}@endif @if($journal->issue)({{$journal->issue}})@endif
                             @if($journal->pages_start && $journal->page_end){{$journal->pages_start}}-{{$journal->page_end}}@endif
                             @if($journal->doi).{{$journal->doi}}@endif
@@ -210,16 +210,16 @@
                             @if($journal->publication_date)
                                 <tr>
                                     <td><strong>Tanggal Publikasi:</strong></td>
-                                    <td>{{ $journal->publication_date->format('d M Y') }}</td>
+                                    <td>{{ $journal->publication_date ? $journal->publication_date->format('d M Y') : '' }}</td>
                                 </tr>
                             @endif
                             <tr>
                                 <td><strong>Dibuat:</strong></td>
-                                <td>{{ $journal->created_at->format('d M Y H:i') }}</td>
+                                <td>{{ $journal->created_at ? $journal->created_at->format('d M Y H:i') : ''}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Diupdate:</strong></td>
-                                <td>{{ $journal->updated_at->format('d M Y H:i') }}</td>
+                                <td>{{ $journal->updated_at ? $journal->updated_at->format('d M Y H:i') : ''}}</td>
                             </tr>
                         </table>
                     </div>
