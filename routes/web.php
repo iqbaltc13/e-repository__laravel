@@ -27,7 +27,7 @@ use PgSql\Lob;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+Route::get('laravel-logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 Route::get('/', function () {
     //return view('welcome');
     return redirect()->route('journals.public');
