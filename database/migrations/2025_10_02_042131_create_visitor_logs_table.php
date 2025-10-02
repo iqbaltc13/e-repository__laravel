@@ -18,7 +18,7 @@ return new class extends Migration
     public function up(): void
     {
         $this->schema->create($this->table_name, function (Blueprint $table) {
-            $table->bigIncrements('id')->primary();
+            $table->bigIncrements('id');
             $table->string('user_id', 255)->nullable();
             $table->ipAddress('ip')->nullable();
             $table->text('endpoint')->nullable();
