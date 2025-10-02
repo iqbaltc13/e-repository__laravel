@@ -9,6 +9,7 @@ class VisitorLog extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    const UPDATED_AT = null;
 
     public function user()
     {
